@@ -1,8 +1,9 @@
-import LogoIcon from "./icons/LogoIcon";
+import LogoIcon from "@/components/icons/LogoIcon";
+
 export default function Footer() {
   return (
     <footer className="border-t border-gray-200 bg-box font-inter">
-      <div className="flex items-center justify-between px-6 py-5">
+      <div className="flex flex-col md:flex-row items-center justify-between px-6 py-5 gap-4 md:gap-0">
         {/* Brand */}
         <div className="flex items-center gap-2 cursor-pointer" id="brand">
           <LogoIcon />
@@ -11,8 +12,8 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* Nav Links - centered */}
-        <div className="flex items-center gap-8">
+        {/* Nav Links */}
+        <div className="flex items-center gap-6 md:gap-8 flex-wrap justify-center">
           <a href="" className="text-gray text-sm font-sans hover:underline">
             About
           </a>
@@ -28,7 +29,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <p className="text-gray text-sm font-sans">
+        <p className="text-gray text-sm font-sans text-center md:text-right">
           © 2024 TechShare Forum. All rights reserved.
         </p>
       </div>

@@ -1,6 +1,7 @@
 import IconProps from "../icon.base";
-export default function SearchIcon({
-  size = 20,
+
+export default function AddFriendIcon({
+  size = 24,
   className = "",
   onClick,
 }: IconProps) {
@@ -18,8 +19,13 @@ export default function SearchIcon({
       className={className}
       onClick={onClick}
     >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      {/* Person head */}
+      <circle cx="10" cy="8" r="3.5" />
+      {/* Person body */}
+      <path d="M2 21v-1a8 8 0 0 1 13.5-5.8" />
+      {/* Plus sign - top right */}
+      <line x1="19" y1="8" x2="19" y2="14" />
+      <line x1="16" y1="11" x2="22" y2="11" />
     </svg>
   );
 }

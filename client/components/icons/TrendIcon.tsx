@@ -1,6 +1,6 @@
 import IconProps from "../icon.base";
 export default function SearchIcon({
-  size = 20,
+  size = 16,
   className = "",
   onClick,
 }: IconProps) {
@@ -18,8 +18,8 @@ export default function SearchIcon({
       className={className}
       onClick={onClick}
     >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
     </svg>
   );
 }

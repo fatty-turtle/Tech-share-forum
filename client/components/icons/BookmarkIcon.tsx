@@ -1,6 +1,7 @@
 import IconProps from "../icon.base";
-export default function SearchIcon({
-  size = 20,
+
+export default function BookmarkIcon({
+  size = 18,
   className = "",
   onClick,
 }: IconProps) {
@@ -18,8 +19,7 @@ export default function SearchIcon({
       className={className}
       onClick={onClick}
     >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
     </svg>
   );
 }

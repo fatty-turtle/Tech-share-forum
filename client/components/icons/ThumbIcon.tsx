@@ -1,6 +1,6 @@
 import IconProps from "../icon.base";
-export default function SearchIcon({
-  size = 20,
+export default function ThumbIcon({
+  size = 16,
   className = "",
   onClick,
 }: IconProps) {
@@ -18,8 +18,8 @@ export default function SearchIcon({
       className={className}
       onClick={onClick}
     >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z" />
+      <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
     </svg>
   );
 }

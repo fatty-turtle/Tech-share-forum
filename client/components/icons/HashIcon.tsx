@@ -1,6 +1,6 @@
 import IconProps from "../icon.base";
-export default function SearchIcon({
-  size = 20,
+export default function HashIcon({
+  size = 16,
   className = "",
   onClick,
 }: IconProps) {
@@ -18,8 +18,10 @@ export default function SearchIcon({
       className={className}
       onClick={onClick}
     >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <line x1="4" y1="9" x2="20" y2="9" />
+      <line x1="4" y1="15" x2="20" y2="15" />
+      <line x1="10" y1="3" x2="8" y2="21" />
+      <line x1="16" y1="3" x2="14" y2="21" />
     </svg>
   );
 }
