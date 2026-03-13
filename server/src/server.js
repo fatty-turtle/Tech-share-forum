@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-// import { initDB, getPool, setDB } from "./config/db.config.js";
+import { initDB, getPool, setDB } from "./config/db.config.js";
 
 dotenv.config();
 
@@ -11,9 +11,9 @@ const PORT = process.env.SERVER_PORT || 3000;
  */
 async function startServer() {
   try {
-    // await initDB();
-    // const pool = await getPool();
-    // await setDB(pool);
+    await initDB();
+    const pool = await getPool();
+    await setDB(pool);
 
     const app = (await import("./app.js")).default;
 

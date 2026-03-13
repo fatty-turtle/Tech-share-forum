@@ -1,17 +1,11 @@
-// components/icons/LogoIcon.tsx
-interface LogoIconProps {
-  size?: number;
-  className?: string;
-  color?: string;
-  onClick?: () => void;
-}
+import IconProps from "../icon.base";
 
 export default function LogoIcon({
   size = 25,
   className = "",
   color = "#1A355B",
   onClick,
-}: LogoIconProps) {
+}: IconProps) {
   return (
     <svg
       width={size}
