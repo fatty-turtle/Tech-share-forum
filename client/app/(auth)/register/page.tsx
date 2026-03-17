@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import fetchApi from "@/utils/fetchApi";
 import useNavigate from "@/hooks/useNavigate";
 
 type RegisterFormData = {
-  name: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -12,13 +12,14 @@ type RegisterFormData = {
 
 const Register: React.FC = () => {
   const [form, setForm] = useState<RegisterFormData>({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -27,22 +28,49 @@ const Register: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
+    if (
+      !form.username ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
       setError("Please fill in all fields");
       return;
     }
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
     setError("");
+    setLoading(true);
 
-    console.log("Register Data:", form);
+    try {
+      const registerData = {
+        username: form.username,
+        email: form.email,
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+      };
+
+      const result = await fetchApi(
+        "http://localhost:4000/auth/register",
+        "POST",
+        registerData,
+      );
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        alert(
+          "Registration successful! Please check your email to verify your account.",
+        );
+        navigate("/login");
+      }
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const navigate = useNavigate();
@@ -67,10 +95,10 @@ const Register: React.FC = () => {
             </label>
             <input
               type="text"
-              name="name"
-              value={form.name}
+              name="username"
+              value={form.username}
               onChange={handleChange}
-              placeholder="John Doe"
+              placeholder="Vinh Pham"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -119,9 +147,14 @@ const Register: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-foreground text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+            disabled={loading}
+            className={`w-full py-2 rounded-lg font-semibold text-white transition ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-foreground hover:bg-blue-600"
+            }`}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 

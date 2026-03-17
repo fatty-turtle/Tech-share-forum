@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import fetchApi from "@/utils/fetchApi";
 import useNavigate from "@/hooks/useNavigate";
 type LoginFormData = {
   email: string;
@@ -13,6 +14,7 @@ const Login: React.FC = () => {
   });
 
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -21,7 +23,7 @@ const Login: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!form.email || !form.password) {
@@ -30,10 +32,26 @@ const Login: React.FC = () => {
     }
 
     setError("");
+    setLoading(true);
 
-    console.log("Login Data:", form);
+    try {
+      const result = await fetchApi(
+        "http://localhost:4000/auth/login",
+        "POST",
+        form,
+      );
 
-    // call API here
+      if (result.error) {
+        setError(result.error);
+      } else if (result.response) {
+        localStorage.setItem("token", result.response.token);
+        navigate("/");
+      }
+    } catch (err) {
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
   const navigate = useNavigate();
   return (
@@ -80,9 +98,14 @@ const Login: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-foreground py-2 font-semibold text-white transition hover:bg-blue-600"
+            disabled={loading}
+            className={`w-full rounded-lg py-2 font-semibold text-white transition ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-foreground hover:bg-blue-600"
+            }`}
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 

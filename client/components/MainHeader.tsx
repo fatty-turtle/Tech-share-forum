@@ -1,6 +1,6 @@
 "use client";
 import SearchIcon from "@/components/icons/SearchIcon";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LogoIcon from "@/components/icons/LogoIcon";
 import { useRouter } from "next/navigation";
 import MenuIcon from "@/components/icons/MenuIcon";
@@ -10,13 +10,25 @@ import useNavigate from "@/hooks/useNavigate";
 export default function Header() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
+
   return (
     <header className="relative bg-background-box border-b border-gray-200 font-inter">
       {/* ─── Main bar ─── */}
       <div className="flex items-center justify-between px-4 md:px-6 py-3 gap-4">
-        {/* Brand — always visible */}
+        {/* Brand */}
         <div
           className="flex items-center gap-2 cursor-pointer shrink-0"
           id="brand"
@@ -53,18 +65,29 @@ export default function Header() {
 
         {/* Auth Buttons — desktop only (lg+) */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
-          <button
-            className="text-sm text-foreground font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition-colors"
-            onClick={() => navigate("/login")}
-          >
-            Log In
-          </button>
-          <button
-            className="text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
-            onClick={() => navigate("/register")}
-          >
-            Sign Up
-          </button>
+          {isLoggedIn ? (
+            <button
+              className="text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <button
+                className="text-sm text-foreground font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition-colors"
+                onClick={() => navigate("/login")}
+              >
+                Log In
+              </button>
+              <button
+                className="text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
+                onClick={() => navigate("/register")}
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
 
         {/* Hamburger — visible on mobile AND tablet (below lg) */}
@@ -109,18 +132,38 @@ export default function Header() {
 
           {/* Auth */}
           <div className="flex flex-col gap-2 pt-1 border-t border-gray-100">
-            <button
-              className="w-full text-sm text-foreground font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition-colors text-left"
-              onClick={() => navigate("/login")}
-            >
-              Log In
-            </button>
-            <button
-              className="w-full text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
-              onClick={() => navigate("/register")}
-            >
-              Sign Up
-            </button>
+            {isLoggedIn ? (
+              <button
+                className="w-full text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors text-left"
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <button
+                  className="w-full text-sm text-foreground font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition-colors text-left"
+                  onClick={() => {
+                    navigate("/login");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Log In
+                </button>
+                <button
+                  className="w-full text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
+                  onClick={() => {
+                    navigate("/register");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

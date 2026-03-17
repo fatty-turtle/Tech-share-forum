@@ -8,7 +8,7 @@ type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 /**
  * Return type for fetchApi function
  */
-interface FetchApiResponse<T = unknown> {
+interface FetchApiResponse<T = any> {
   response: T | null;
   error: string | null;
   loading: boolean;
@@ -23,10 +23,10 @@ interface FetchApiResponse<T = unknown> {
  * @returns {Promise<FetchApiResponse>}
  */
 
-async function fetchApi<T = unknown>(
+async function fetchApi<T = any>(
   url: string,
   method: HttpMethod = "GET",
-  data: unknown = null,
+  data: any = null,
   headers: object = {},
 ): Promise<FetchApiResponse<T>> {
   try {

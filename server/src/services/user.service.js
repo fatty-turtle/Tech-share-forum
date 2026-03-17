@@ -90,7 +90,6 @@ class UserService {
   }
 
   /**
-   * Assigns SELLER role to a user
    * @param {number} userId - User's ID
    * @returns {Promise<boolean>} True if role was assigned successfully, false otherwise
    */

@@ -17,13 +17,15 @@ class PostService {
   }
 
   /**
-   * Retrieves trending posts by view count
+   * Retrieves trending posts by view count (optional tagName)
+   * @param {string|null} tagName - Optional tag filter
    * @param {number} limit - Posts per page
    * @param {number} offset - Offset for pagination
    * @returns {Promise<{total: number, posts: Array}>}
    */
-  async getTrendPosts(limit, offset) {
+  async getTrendPosts(tagName, limit, offset) {
     const { total, rows } = await this.postRepository.getTrendPosts(
+      tagName,
       limit,
       offset,
     );
