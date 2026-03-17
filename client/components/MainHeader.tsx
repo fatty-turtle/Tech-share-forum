@@ -5,16 +5,13 @@ import LogoIcon from "@/components/icons/LogoIcon";
 import { useRouter } from "next/navigation";
 import MenuIcon from "@/components/icons/MenuIcon";
 import CloseIcon from "@/components/icons/CloseIcon";
+import useNavigate from "@/hooks/useNavigate";
 
 export default function Header() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleClick = (route: string) => {
-    router.push(route);
-    setMenuOpen(false);
-  };
-
+  const navigate = useNavigate();
   return (
     <header className="relative bg-background-box border-b border-gray-200 font-inter">
       {/* ─── Main bar ─── */}
@@ -58,13 +55,13 @@ export default function Header() {
         <div className="hidden lg:flex items-center gap-3 shrink-0">
           <button
             className="text-sm text-foreground font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition-colors"
-            onClick={() => handleClick("/login")}
+            onClick={() => navigate("/login")}
           >
             Log In
           </button>
           <button
             className="text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
-            onClick={() => handleClick("/register")}
+            onClick={() => navigate("/register")}
           >
             Sign Up
           </button>
@@ -114,13 +111,13 @@ export default function Header() {
           <div className="flex flex-col gap-2 pt-1 border-t border-gray-100">
             <button
               className="w-full text-sm text-foreground font-medium px-4 py-2 hover:bg-gray-100 rounded-md transition-colors text-left"
-              onClick={() => handleClick("/login")}
+              onClick={() => navigate("/login")}
             >
               Log In
             </button>
             <button
               className="w-full text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
-              onClick={() => handleClick("/register")}
+              onClick={() => navigate("/register")}
             >
               Sign Up
             </button>

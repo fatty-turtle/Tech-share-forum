@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import useNavigate from "@/hooks/useNavigate";
 
 type RegisterFormData = {
   name: string;
@@ -42,14 +43,9 @@ const Register: React.FC = () => {
     setError("");
 
     console.log("Register Data:", form);
-
-    // Call API here
   };
 
-  const router = useRouter();
-  const handleClick = () => {
-    router.push("/login");
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -133,7 +129,7 @@ const Register: React.FC = () => {
           Already have an account?{" "}
           <span
             className="text-blue-500 hover:underline cursor-pointer"
-            onClick={handleClick}
+            onClick={() => navigate("/login")}
           >
             Login
           </span>

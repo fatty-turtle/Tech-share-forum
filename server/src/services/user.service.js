@@ -19,7 +19,8 @@ class UserService {
    * @returns {Promise<{total: number, limit: number, offset: number, users: Array}>} Paginated user list
    */
   async getUserList(limit, offset) {
-    return await this.userRepository.getUserList(limit, offset);
+    const result = await this.userRepository.getUserList(limit, offset);
+    return { total: result.total, users: result.rows };
   }
 
   /**

@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-
+import useNavigate from "@/hooks/useNavigate";
 type LoginFormData = {
   email: string;
   password: string;
@@ -36,10 +35,7 @@ const Login: React.FC = () => {
 
     // call API here
   };
-  const router = useRouter();
-  const handleClick = () => {
-    router.push("/register");
-  };
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
@@ -94,7 +90,7 @@ const Login: React.FC = () => {
           Don't have an account?{" "}
           <span
             className="cursor-pointer text-blue-500 hover:underline"
-            onClick={handleClick}
+            onClick={() => navigate("/register")}
           >
             Register
           </span>

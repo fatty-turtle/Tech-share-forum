@@ -24,8 +24,8 @@ class UserController {
       return res.status(200).json({
         status_code: 200,
         message: "Users retrieved successfully",
-        data: result.users,
-        meta,
+        ...meta,
+        users: result.users,
       });
     } catch (err) {
       return res.status(500).json({
