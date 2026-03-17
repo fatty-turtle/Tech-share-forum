@@ -29,11 +29,11 @@ const loginDTO = [
 
 const registerDTO = [
   // name
-  body("name")
+  body("username")
     .trim()
     .escape()
     .isLength({ min: 2, max: 50 })
-    .withMessage("Name must be between 2 and 50 characters"),
+    .withMessage("Username must be between 2 and 50 characters"),
 
   // email
   body("email")

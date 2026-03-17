@@ -36,34 +36,45 @@ class PostController {
   }
 
   /**
-   * Retrieves trending posts by view count
+   * Retrieves trending posts by view count (optional tag filter)
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
-   * @param {Function} next - Express next middleware function
+   * @returns {Promise<Object>} JSON response with users list and pagination metadata
    */
   async getTrendPosts(req, res) {
     try {
-      const { page, offset } = getPagination(req.query);
-      const limit = 4;
-      const result = await postService.getTrendPosts(limit, offset);
+      const { page = 1, tag } = req.query;
+      const limit = 5;
+      const offset = (parseInt(page) - 1) * limit;
 
-      const meta = getPagingMeta({ page, limit, total: result.total });
+      const result = await postService.getTrendPosts(
+        tag || null,
+        limit,
+        offset,
+      );
+      const meta = getPagingMeta({
+        page: parseInt(page),
+        limit,
+        total: result.total,
+      });
 
+      const tagMsg = tag ? ` for tag "${tag}"` : "";
       return res.status(200).json({
         status_code: 200,
-        message: "Trend posts retrieved successfully",
+        message: `Trend posts retrieved successfully${tagMsg}`,
         ...meta,
         posts: result.posts,
       });
     } catch (err) {
       return res.status(500).json({
         status_code: 500,
-        message: err.message || "Failed to retrieve posts",
+        message: err.message || "Failed to retrieve trend posts",
       });
     }
   }
 
   // /**
+
   //  * Retrieves a single post by ID and increments its view count
   //  * @param {Object} req - Express request object
   //  * @param {Object} res - Express response object

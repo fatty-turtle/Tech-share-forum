@@ -12,7 +12,13 @@ export default function Home() {
           className="bg-foreground text-white p-3 rounded-2xl cursor-pointer hover:bg-background hover:text-foreground"
           onClick={() => navigate("/home")}
         >
-          Back to Homepage
+          Go to Homepage
+        </button>
+        <button
+          className="bg-foreground text-white p-3 rounded-2xl cursor-pointer hover:bg-background hover:text-foreground"
+          onClick={() => navigate("/login")}
+        >
+          Go to Login
         </button>
       </div>
     </>

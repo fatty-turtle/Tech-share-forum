@@ -1,110 +1,152 @@
 "use client";
-import AddFriendIcon from "@/components/icons/AddFriendIcon";
+
 import HashIcon from "@/components/icons/HashIcon";
 import StarIcon from "@/components/icons/StarIcon";
+import AddFriendIcon from "@/components/icons/AddFriendIcon";
 
-const popularTags = [
-  { name: "#javascript", count: "1.2k" },
-  { name: "#artificialintelligence", count: "980" },
-  { name: "#rustlang", count: "750" },
-  { name: "#docker", count: "540" },
-];
+interface TrendTag {
+  tag_id: number;
+  name: string;
+  post_count: number;
+}
 
-const contributors = [
-  {
-    name: "Jordan S.",
-    avatar: "JS",
-    stats: "48 discussions • 2.1k likes",
-    color: "bg-teal-500",
-  },
-  {
-    name: "Elena Vance",
-    avatar: "EV",
-    stats: "32 discussions • 1.8k likes",
-    color: "bg-yellow-500",
-  },
-  {
-    name: "Liam Hughes",
-    avatar: "LH",
-    stats: "25 discussions • 1.5k likes",
-    color: "bg-orange-400",
-  },
-];
+interface TopContributor {
+  id: number;
+  name: string;
+  avatar?: string;
+  discussions: number;
+  likes: number;
+}
 
-export default function DashBoard() {
+interface CommunityStats {
+  members: number;
+  posts: number;
+}
+
+interface Props {
+  trendTags: TrendTag[];
+  topContributors?: TopContributor[];
+  communityStats?: CommunityStats;
+}
+
+function formatCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
+
+export default function DashBoard({
+  trendTags,
+  topContributors = [],
+  communityStats,
+}: Props) {
   return (
-    <aside className="flex flex-col gap-4 w-64 shrink-0">
-      {/* Popular Tags */}
-      <div className="bg-white rounded-xl border border-gray-200 px-5 py-4">
-        <h2 className="flex items-center gap-2 font-bold text-[#1a355b] text-base mb-4">
-          <HashIcon /> Popular Tags
-        </h2>
-        <ul className="flex flex-col gap-3">
-          {popularTags.map((tag) => (
-            <li key={tag.name} className="flex items-center justify-between">
-              <a href="" className="text-sm text-[#1a355b] hover:underline">
-                {tag.name}
-              </a>
-              <span className="text-xs bg-blue-50 text-[#1a355b] font-semibold px-2 py-0.5 rounded-md">
-                {tag.count}
+    <aside className="w-64 shrink-0 flex flex-col gap-5">
+      {/* Popular Tags Card */}
+      <div className="bg-backgroud-box border border-gray-200 rounded-xl p-5">
+        <h3 className="text-base font-bold text-foreground flex items-center gap-2 mb-4">
+          <HashIcon className="w-4 h-4 text-gray-500" />
+          Popular Tags
+        </h3>
+        <div className="space-y-2">
+          {trendTags.map((tag) => (
+            <div
+              key={tag.tag_id}
+              className="flex items-center justify-between group cursor-pointer"
+            >
+              <span className="text-sm text-gray-700 group-hover:text-[#1a6ef5] transition-colors">
+                #{tag.name}
               </span>
-            </li>
+              <span className="text-xs text-gray-400 font-medium">
+                {formatCount(tag.post_count)}
+              </span>
+            </div>
           ))}
-        </ul>
-        <button className="mt-4 text-sm font-semibold text-[#1a355b] hover:underline w-full text-center">
-          View all tags
-        </button>
+
+          {trendTags.length === 0 && (
+            <p className="text-sm text-gray-400 text-center py-4">
+              No trending tags yet
+            </p>
+          )}
+        </div>
+        {trendTags.length > 0 && (
+          <button className="mt-4 text-sm text-gray-500 hover:text-gray-700 transition-colors w-full text-center font-medium">
+            View all tags
+          </button>
+        )}
       </div>
 
-      {/* Top Contributors */}
-      <div className="bg-white rounded-xl border border-gray-200 px-5 py-4">
-        <h2 className="flex items-center gap-2 font-bold text-[#1a355b] text-base mb-4">
-          <StarIcon /> Top Contributors
-        </h2>
-        <ul className="flex flex-col gap-4">
-          {contributors.map((user) => (
-            <li key={user.name} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-9 h-9 rounded-full ${user.color} flex items-center justify-center text-xs font-bold text-white shrink-0`}
-                >
-                  {user.avatar}
+      {/* Top Contributors Card */}
+      {topContributors.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <h3 className="text-base font-bold text-foreground flex items-center gap-2 mb-4">
+            {/* circle-plus icon */}
+            <StarIcon />
+            Top Contributors
+          </h3>
+          <div className="space-y-3">
+            {topContributors.map((contributor) => (
+              <div
+                key={contributor.id}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2.5">
+                  {contributor.avatar ? (
+                    <img
+                      src={contributor.avatar}
+                      alt={contributor.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
+                      {contributor.name[0]}
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm font-semibold text-foreground leading-none">
+                      {contributor.name}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {contributor.discussions} discussions &bull;{" "}
+                      {formatCount(contributor.likes)} likes
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#1a355b]">
-                    {user.name}
-                  </p>
-                  <p className="text-xs text-gray-400">{user.stats}</p>
-                </div>
+                {/* Add / follow button */}
+                <button className="text-gray-400 hover:text-[#1a6ef5] transition-colors">
+                  <AddFriendIcon></AddFriendIcon>
+                </button>
               </div>
-              <button className="text-[#1a355b] hover:opacity-70 shrink-0">
-                <AddFriendIcon size={18} />
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Community Stats */}
-      <div className="bg-white rounded-xl border border-gray-200 px-5 py-4">
-        <h2 className="font-bold text-[#1a355b] text-base mb-4">
-          TechShare Community
-        </h2>
-        <div className="flex justify-around">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-[#1a355b]">45k</p>
-            <p className="text-xs text-gray-400 font-semibold tracking-wide">
-              MEMBERS
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-[#1a355b]">12k</p>
-            <p className="text-xs text-gray-400 font-semibold tracking-wide">
-              POSTS
-            </p>
+            ))}
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Community Stats Card */}
+      {communityStats && (
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <h3 className="text-base font-bold text-foreground mb-4">
+            TechShare Community
+          </h3>
+          <div className="flex items-center gap-6">
+            <div>
+              <p className="text-2xl font-bold text-foreground">
+                {formatCount(communityStats.members)}
+              </p>
+              <p className="text-xs text-gray-400 uppercase tracking-wide mt-0.5 font-medium">
+                Members
+              </p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-foreground">
+                {formatCount(communityStats.posts)}
+              </p>
+              <p className="text-xs text-gray-400 uppercase tracking-wide mt-0.5 font-medium">
+                Posts
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
