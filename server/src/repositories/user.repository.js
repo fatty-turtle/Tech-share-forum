@@ -9,25 +9,29 @@ class UserRepository extends BaseRepository {
     super("users");
   }
 
+  // /**
+  //  * Retrieves a paginated list of users
+  //  * @param {number} limit - Maximum number of users to return
+  //  * @param {number} offset - Number of users to skip
   /**
    * Retrieves a paginated list of users
    * @param {number} limit - Maximum number of users to return
    * @param {number} offset - Number of users to skip
-   * @returns {Promise<{total: number, limit: number, offset: number, users: Array}>}
+   * @returns {Promise<{total: number, rows: Array}>}
    */
   async getUserList(limit, offset) {
     const [rows] = await this.pool.query(
       `
-      SELECT
-        u.user_id,
-        u.username,
-        u.avatar,
-        u.bio,
-        u.created_at
-      FROM users u
-      ORDER BY u.created_at DESC
-      LIMIT ? OFFSET ?
-      `,
+    SELECT
+      u.user_id,
+      u.username,
+      u.avatar,
+      u.bio,
+      u.created_at
+    FROM users u
+    ORDER BY u.created_at DESC
+    LIMIT ? OFFSET ?
+    `,
       [limit, offset],
     );
 
@@ -35,7 +39,7 @@ class UserRepository extends BaseRepository {
       `SELECT COUNT(*) AS total FROM users`,
     );
 
-    return { total, limit, offset, users: rows };
+    return { total, rows };
   }
 
   /**

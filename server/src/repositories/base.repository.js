@@ -112,7 +112,7 @@ class BaseRepository {
       [id],
     );
 
-    return result[0] || null;
+    return result.affectedRows > 0;
   }
 }
 

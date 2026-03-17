@@ -84,19 +84,6 @@ class AccountController {
       next(err);
     }
   }
-
-  // /**
-  //  * Handles user logout
-  //  * @param {Object} req - Express request object
-  //  * @param {Object} res - Express response object
-  //  * @returns {Object} JSON response with logout confirmation
-  //  */
-  // async logout(req, res) {
-  //   return res.status(200).json({
-  //     status_code: 200,
-  //     message: "Logout successful",
-  //   });
-  // }
 }
 
 export default AccountController;

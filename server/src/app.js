@@ -4,6 +4,8 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import accRoute from "./routes/account.routes.js";
+import postRoute from "./routes/post.routes.js";
+import tagRoute from "./routes/tag.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 dotenv.config();
@@ -19,6 +21,8 @@ app.use(
 app.use(express.json());
 
 app.use("/auth", accRoute);
+app.use("/post", postRoute);
+app.use("/tag", tagRoute);
 
 app.use(errorMiddleware);
 
@@ -29,6 +33,6 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
-}); 
+});
 
 export default app;

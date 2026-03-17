@@ -1,16 +1,63 @@
 "use client";
 
+// import Swiper core and required modules
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+
+const samples = [
+  {
+    title: "Welcome to TechShare",
+    content:
+      "The ultimate community for developers to share knowledge, discover trends, and grow together.",
+    button: "Join the Community",
+  },
+  {
+    title: "Share What You Know",
+    content:
+      "Publish articles, tutorials, and deep-dives. Your expertise can level up thousands of developers worldwide.",
+    button: "Start Writing",
+  },
+  {
+    title: "Stay Ahead of the Curve",
+    content:
+      "Track trending technologies, follow top contributors, and get personalized feed recommendations tailored to your stack.",
+    button: "Explore Trends",
+  },
+];
+
 export default function Carousel() {
   return (
-    <section className="mx-4 my-6 rounded-2xl bg-foreground px-8 py-16 text-center text-white">
-      <h1 className="text-4xl font-bold mb-4">Welcome to TechShare</h1>
-      <p className="text-base text-blue-200 max-w-lg mx-auto mb-8">
-        The ultimate community for developers to share knowledge, discover
-        trends, and grow together.
-      </p>
-      <button className="bg-white text-foreground font-semibold px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors duration-200">
-        Join the Community
-      </button>
-    </section>
+    <Swiper
+      // install Swiper modules
+      modules={[Navigation, Pagination, A11y]}
+      spaceBetween={0}
+      slidesPerView={1}
+      navigation
+      pagination={{ clickable: true }}
+      onSwiper={(swiper) => console.log(swiper)}
+      onSlideChange={() => console.log("slide change")}
+      className="w-7xl mt-5 mb-5 rounded-2xl"
+    >
+      {samples.map((sample, i) => (
+        <SwiperSlide key={i}>
+          <div className="flex flex-col items-center justify-center text-center h-90 bg-foreground text-white">
+            <h1 className="text-3xl mb-4 font-bold text-background-box">
+              {sample.title}
+            </h1>
+            <p className="w-90 mb-8 text-blue-200">{sample.content}</p>
+            <button className="w-50 font-bold cursor-pointer bg-box text-foreground h-12 rounded-2xl hover:bg-blue-200">
+              {sample.button}
+            </button>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 }

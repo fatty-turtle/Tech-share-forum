@@ -1,10 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
+import useNavigate from "@/hooks/useNavigate";
 export default function Home() {
-  const router = useRouter();
-  const handleClick = () => {
-    router.push("/home");
-  };
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="flex flex-col items-center justify-center gap-5 h-screen">
@@ -12,7 +10,7 @@ export default function Home() {
         permission!
         <button
           className="bg-foreground text-white p-3 rounded-2xl cursor-pointer hover:bg-background hover:text-foreground"
-          onClick={handleClick}
+          onClick={() => navigate("/home")}
         >
           Back to Homepage
         </button>

@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import BookmarkIcon from "@/components/icons/BookmarkIcon";
 import FilterIcon from "@/components/icons/FilterIcon";
 import ThumbIcon from "@/components/icons/ThumbIcon";
 import CommentIcon from "@/components/icons/CommentIcon";
@@ -134,9 +133,6 @@ export default function Post() {
                   <EyeIcon /> {post.views}
                 </span>
               </div>
-              <button className="text-gray-300 hover:text-[#1a355b] transition-colors">
-                <BookmarkIcon />
-              </button>
             </div>
           </div>
         ))}

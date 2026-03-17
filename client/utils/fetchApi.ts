@@ -42,7 +42,7 @@ async function fetchApi<T = unknown>(
     return {
       response: null,
       error:
-        (axiosError.response?.data as string) ||
+        (axiosError.response?.data as { message?: string })?.message ||
         axiosError.message ||
         "An unexpected error occurred",
       loading: false,
