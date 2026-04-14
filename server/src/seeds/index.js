@@ -1,6 +1,13 @@
 import { getPool, initDB } from "../config/db.config.js";
 import { seedAdmin } from "./admin.seed.js";
-import { seedAll } from "./major.seed.js";
+import { seedAccounts } from "./accounts.seed.js";
+import { seedTags } from "./tags.seed.js";
+import { seedPosts } from "./posts.seed.js";
+import { seedComments } from "./comments.seed.js";
+import { seedPostReactions } from "./post_reactions.seed.js";
+import { seedCommentReactions } from "./comment_reactions.seed.js";
+import { seedPostSaves } from "./post_saves.seed.js";
+import { seedNotifications } from "./notifications.seed.js";
 
 async function runSeeds() {
   try {
@@ -11,7 +18,14 @@ async function runSeeds() {
     await conn.beginTransaction();
 
     await seedAdmin(conn);
-    await seedAll(conn);
+    await seedAccounts(conn);
+    await seedTags(conn);
+    await seedPosts(conn);
+    await seedComments(conn);
+    await seedPostReactions(conn);
+    await seedCommentReactions(conn);
+    await seedPostSaves(conn);
+    await seedNotifications(conn);
     await conn.commit();
     console.log("[Server] Seeds completed successfully");
   } catch (err) {

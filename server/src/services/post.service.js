@@ -1,15 +1,18 @@
 import PostRepository from "../repositories/post.repository.js";
 
+/**
+ * Service for handling post-related business logic and CRUD operations.
+ */
 class PostService {
   constructor() {
     this.postRepository = new PostRepository();
   }
 
   /**
-   * Retrieves paginated list of posts
-   * @param {number} limit - Posts per page
+   * Retrieves paginated list of posts with author info.
+   * @param {number} limit - Posts per page (default 10)
    * @param {number} offset - Offset for pagination
-   * @returns {Promise<{total: number, page: number, limit: number, posts: Array}>}
+   * @returns {Promise<{total: number, posts: Array}>} Paginated posts
    */
   async getPosts(limit, offset) {
     const { total, rows } = await this.postRepository.getPosts(limit, offset);
@@ -17,10 +20,10 @@ class PostService {
   }
 
   /**
-   * Retrieves trending posts by view count (optional tagName)
-   * @param {string|null} tagName - Optional tag filter
-   * @param {number} limit - Posts per page
-   * @param {number} offset - Offset for pagination
+   * Retrieves trending posts sorted by views (optional tag filter).
+   * @param {string|null} tagName - Filter by tag name
+   * @param {number} limit - Number of posts
+   * @param {number} offset - Offset
    * @returns {Promise<{total: number, posts: Array}>}
    */
   async getTrendPosts(tagName, limit, offset) {
@@ -33,54 +36,63 @@ class PostService {
   }
 
   /**
-   * Toggles like on a post for a given user
+   * Toggles LIKE/DISLIKE reaction on post for user.
    * @param {number} postId - Post ID
    * @param {number} userId - User ID
-   * @returns {Promise<{liked: boolean}>}
+   * @param {'LIKE' | 'DISLIKE'} [reactionType='LIKE'] - Reaction type
+   * @returns {Promise<{reacted: boolean, type: string}>}
    */
-  async toggleLike(postId, userId) {
-    return await this.postRepository.toggleLike(postId, userId);
+  async toggleReaction(postId, userId, reactionType = "LIKE") {
+    return await this.postRepository.toggleReaction(
+      postId,
+      userId,
+      reactionType,
+    );
   }
 
   /**
-   * Increments view count of a post
+   * Increments view count for a post.
    * @param {number} postId - Post ID
    * @returns {Promise<void>}
    */
-  async incrementView(postId) {
-    await this.postRepository.incrementView(postId);
+  async incrementViews(postId) {
+    await this.postRepository.incrementViews(postId);
   }
 
   /**
-   * Creates a new post
+   * Creates a new post.
    * @param {Object} data - Post data
-   * @param {number} data.author_id
-   * @param {string} data.type
-   * @param {string} data.title
-   * @param {string} data.content
+   * @param {number} data.author_id - Author user ID
+   * @param {string} data.title - Post title
+   * @param {string} data.content - Post content
+   * @param {'DRAFT' | 'PUBLISHED' | 'ARCHIVED'} [data.status='PUBLISHED'] - Post status
+   * @param {boolean} [data.is_pinned=false] - Pinned post
    * @returns {Promise<Object>} Created post
+   * @throws {Error} Missing required fields
    */
   async createPost(data) {
-    const { author_id, type, title, content } = data;
+    const { author_id, title, content, status = "PUBLISHED" } = data;
 
     if (!author_id || !title || !content) {
       throw new Error("author_id, title and content are required");
     }
 
-    return await this.postRepository.createPost({
+    return await this.postRepository.create({
       author_id,
-      type,
       title,
       content,
+      status,
+      ...data,
     });
   }
 
   /**
-   * Updates an existing post
+   * Updates existing post (author only).
    * @param {number} postId - Post ID
-   * @param {number} authorId - Must match post's author_id
-   * @param {Object} data - Fields to update
-   * @returns {Promise<boolean>}
+   * @param {number} authorId - Author user ID (authorization check)
+   * @param {Object} data - Fields to update (title, content, status, is_pinned)
+   * @returns {Promise<boolean>} Success
+   * @throws {Error} Forbidden if not author
    */
   async updatePost(postId, authorId, data) {
     const post = await this.postRepository.findById(postId);
@@ -95,10 +107,11 @@ class PostService {
   }
 
   /**
-   * Deletes a post
+   * Deletes post (author only).
    * @param {number} postId - Post ID
-   * @param {number} authorId - Must match post's author_id
-   * @returns {Promise<boolean>}
+   * @param {number} authorId - Author user ID (authorization check)
+   * @returns {Promise<boolean>} Success
+   * @throws {Error} Forbidden if not author
    */
   async deletePost(postId, authorId) {
     const post = await this.postRepository.findById(postId);

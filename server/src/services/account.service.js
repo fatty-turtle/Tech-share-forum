@@ -1,4 +1,5 @@
 import AccountRepository from "../repositories/account.repository.js";
+import UserRepository from "../repositories/user.repository.js";
 import bcrypt from "bcrypt";
 import { createToken } from "../utils/jwt.utils.js";
 import { sendVerificationEmail } from "../utils/mail.utils.js";
@@ -10,6 +11,7 @@ import crypto from "crypto";
 class AccountService {
   constructor() {
     this.accountRepository = new AccountRepository();
+    this.userRepository = new UserRepository();
   }
 
   /**
@@ -42,13 +44,6 @@ class AccountService {
 
     return {
       token,
-      user: {
-        user_id: user.user_id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-      },
     };
   }
 
@@ -63,6 +58,7 @@ class AccountService {
    */
   async register({ username, email, password }) {
     const existingUser = await this.accountRepository.getAccountByEmail(email);
+    console.log("1. email check passed");
     if (existingUser) {
       throw new Error("Email already exists");
     }
@@ -72,15 +68,24 @@ class AccountService {
     const token = crypto.randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    await this.accountRepository.createAccountWithVerification(
-      username,
-      email,
-      passwordHash,
-      token,
-      expires,
-    );
+    const accountId =
+      await this.accountRepository.createAccountWithVerification(
+        email,
+        passwordHash,
+        token,
+        expires,
+      );
 
+    // console.log("2. account created:", accountId);
+
+    await this.userRepository.createUser(accountId, username);
+
+    // console.log("3. user created");
+
+    // Note: Email verification will activate account and role assigned later
     await sendVerificationEmail(email, token);
+
+    // console.log("4. email sent");
   }
 
   /**
