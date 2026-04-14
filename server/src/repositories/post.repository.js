@@ -1,32 +1,21 @@
 import BaseRepository from "./base.repository.js";
 
-/**
- * Repository for authentication-related database operations
- * @extends BaseRepository
- */
-
 class PostRepository extends BaseRepository {
   constructor() {
     super("posts");
   }
 
-  /**
-   * Retrieves all posts with author info and pagination
-   * @param {number} limit - Maximum number of posts to return
-   * @param {number} offset - Number of posts to skip
-   * @returns {Promise<{total: number, rows: Array}>}
-   */
   async getPosts(limit, offset) {
     const [rows] = await this.pool.query(
       `
-    SELECT 
-      p.*,
-      u.username AS author_name,
-      u.avatar   AS author_avatar
-    FROM posts p
-    JOIN users u ON u.user_id = p.author_id
-    LIMIT ? OFFSET ?
-    `,
+      SELECT 
+        p.*,
+        u.username AS author_name,
+        u.avatar AS author_avatar
+      FROM posts p
+      JOIN users u ON u.user_id = p.author_id
+      LIMIT ? OFFSET ?
+      `,
       [limit, offset],
     );
 
@@ -37,19 +26,12 @@ class PostRepository extends BaseRepository {
     return { total, rows };
   }
 
-  /**
-   * Retrieves trending posts by view count descending (optional tag filter)
-   * @param {string|null} tagName - Optional tag name to filter
-   * @param {number} limit
-   * @param {number} offset
-   * @returns {Promise<{total: number, rows: Array}>}
-   */
   async getTrendPosts(tagName, limit, offset) {
     let query = `
       SELECT 
         p.*,
         u.username AS author_name,
-        u.avatar   AS author_avatar
+        u.avatar AS author_avatar
     `;
     let countQuery;
     let params;
@@ -62,7 +44,7 @@ class PostRepository extends BaseRepository {
         JOIN posts_tags pt ON pt.post_id = p.post_id
         JOIN tags t ON t.tag_id = pt.tag_id
         WHERE t.name = ?
-        ORDER BY p.view_count DESC
+        ORDER BY p.views DESC
         LIMIT ? OFFSET ?`;
       params = [tagName, limit, offset];
 
@@ -76,7 +58,7 @@ class PostRepository extends BaseRepository {
       query += `
         FROM posts p
         ${joins}
-        ORDER BY p.view_count DESC
+        ORDER BY p.views DESC
         LIMIT ? OFFSET ?`;
       params = [limit, offset];
 
@@ -99,13 +81,13 @@ class PostRepository extends BaseRepository {
       SELECT 
         p.*,
         u.username AS author_name,
-        u.avatar   AS author_avatar
+        u.avatar AS author_avatar
       FROM posts p
       JOIN users u ON u.user_id = p.author_id
       JOIN posts_tags pt ON pt.post_id = p.post_id
       JOIN tags t ON t.tag_id = pt.tag_id
       WHERE t.name = ?
-      ORDER BY p.view_count DESC
+      ORDER BY p.views DESC
       LIMIT ? OFFSET ?
       `,
       [tagName, limit, offset],
@@ -117,13 +99,54 @@ class PostRepository extends BaseRepository {
       FROM posts p
       JOIN posts_tags pt ON pt.post_id = p.post_id
       JOIN tags t ON t.tag_id = pt.tag_id
-      WHERE t.name = ?
-      `,
+      WHERE t.name = ?`,
       [tagName],
     );
 
     return { total, rows };
   }
+
+  async toggleReaction(postId, userId, reactionType = "LIKE") {
+    const [existing] = await this.pool.query(
+      `SELECT reaction_type FROM post_reactions WHERE post_id = ? AND user_id = ?`,
+      [postId, userId],
+    );
+
+    if (existing.length > 0) {
+      if (existing[0].reaction_type === reactionType) {
+        // Remove reaction
+        await this.pool.query(
+          `DELETE FROM post_reactions WHERE post_id = ? AND user_id = ?`,
+          [postId, userId],
+        );
+        return { reacted: false };
+      } else {
+        // Toggle to new type
+        await this.pool.query(
+          `UPDATE post_reactions SET reaction_type = ? WHERE post_id = ? AND user_id = ?`,
+          [reactionType, postId, userId],
+        );
+        return { reacted: true, type: reactionType };
+      }
+    } else {
+      // Add reaction
+      await this.pool.query(
+        `INSERT INTO post_reactions (post_id, user_id, reaction_type)
+         VALUES (?, ?, ?)`,
+        [postId, userId, reactionType],
+      );
+      return { reacted: true, type: reactionType };
+    }
+  }
+
+  async incrementViews(postId) {
+    await this.pool.query(
+      `UPDATE posts SET views = views + 1 WHERE post_id = ?`,
+      [postId],
+    );
+  }
+
+  // BaseRepository methods like create, update, findById, delete available
 }
 
 export default PostRepository;
