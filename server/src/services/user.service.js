@@ -1,5 +1,5 @@
 import UserRepository from "../repositories/user.repository.js";
-import AuthenticationRepository from "../repositories/authentication.repository.js";
+import AccountRepository from "../repositories/account.repository.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
@@ -9,7 +9,7 @@ import crypto from "crypto";
 class UserService {
   constructor() {
     this.userRepository = new UserRepository();
-    this.authRepository = new AuthenticationRepository();
+    this.authRepository = new AccountRepository();
   }
 
   /**
@@ -56,28 +56,28 @@ class UserService {
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     // Create user with account (auto-verified for admin-created users)
-    const userId = await this.authRepository.createUserWithVerification(
-      name,
+    const accountId = await this.authRepository.createAccountWithVerification(
       email,
       passwordHash,
       token,
       expires,
     );
+    const userId = await this.userRepository.createUser(accountId, name);
 
     // Auto-activate the account
-    const user = await this.authRepository.getUserByVerificationToken(token);
+    const user = await this.authRepository.getAccountByVerificationToken(token);
     if (user) {
-      await this.authRepository.activateUser(user.account_id);
+      await this.authRepository.activateAccount(user.account_id);
     }
 
     // Assign EMPLOYEE role (matching the registration flow)
     const roleAssigned = await this.authRepository.assignRoleToUser(
       userId,
-      "EMPLOYEE",
+      "USER",
     );
 
     if (!roleAssigned) {
-      throw new Error("Default role EMPLOYEE not found");
+      throw new Error("Default role USER not found");
     }
 
     return {
@@ -94,7 +94,7 @@ class UserService {
    * @returns {Promise<boolean>} True if role was assigned successfully, false otherwise
    */
   async createSeller(userId) {
-    return await this.userRepository.assignRoleToUser(userId, "SELLER");
+    return await this.authRepository.assignRoleToUser(userId, "MOD");
   }
 
   /**
@@ -158,7 +158,7 @@ class UserService {
    * @returns {Promise<boolean>} True if seller role was removed successfully, false otherwise
    */
   async deleteSeller(userID) {
-    return await this.userRepository.deleteSeller(userID);
+    return await this.authRepository.assignRoleToUser(userID, "USER");
   }
 }
 

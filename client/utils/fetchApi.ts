@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 
 /**
  * HTTP method types supported by fetchApi
@@ -23,6 +23,36 @@ interface FetchApiResponse<T = any> {
  * @returns {Promise<FetchApiResponse>}
  */
 
+const api: AxiosInstance = axios.create({
+  baseURL: "http://localhost:4000",
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+// Optional: response interceptor for error handling or refresh
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("accessToken");
+      // Optional: redirect to login
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
+);
+
 async function fetchApi<T = any>(
   url: string,
   method: HttpMethod = "GET",
@@ -30,7 +60,7 @@ async function fetchApi<T = any>(
   headers: object = {},
 ): Promise<FetchApiResponse<T>> {
   try {
-    const response = await axios({
+    const response = await api({
       url: url,
       method: method,
       data: data,

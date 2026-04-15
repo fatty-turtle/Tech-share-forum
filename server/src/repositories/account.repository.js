@@ -1,7 +1,7 @@
 import BaseRepository from "./base.repository.js";
 
 /**
- * Repository for authentication-related database operations
+ * Repository for accounts table - authentication, roles, verification.
  * @extends BaseRepository
  */
 class AccountRepository extends BaseRepository {
@@ -10,9 +10,9 @@ class AccountRepository extends BaseRepository {
   }
 
   /**
-   * Retrieves an account and linked user profile by email
-   * @param {string} email - User's email address
-   * @returns {Promise<Object|null>} User object or null if not found
+   * Get account + linked user by email.
+   * @param {string} email - Email address
+   * @returns {Promise<Object|null>} Account + user data or null
    */
   async getAccountByEmail(email) {
     const [rows] = await this.pool.query(
@@ -38,60 +38,42 @@ class AccountRepository extends BaseRepository {
   }
 
   /**
-   * Creates a new account with a verification token, then links a user profile
-   * @param {string} username - User's username
-   * @param {string} email - User's email
-   * @param {string} passwordHash - Hashed password
+   * Create account with verification token (role defaults to USER).
+   * @param {string} email
+   * @param {string} passwordHash - BCrypt hash
    * @param {string} token - Verification token
-   * @param {Date} expires - Token expiration date
-   * @returns {Promise<number>} Inserted user ID
+   * @param {Date} expires - Token expiry
+   * @param {object|null} connection - Transaction connection
+   * @returns {Promise<number>} account_id
    */
   async createAccountWithVerification(
-    username,
     email,
     passwordHash,
     token,
     expires,
+    connection = null,
   ) {
-    const connection = await this.pool.getConnection();
-
-    try {
-      await connection.beginTransaction();
-
-      const [accountResult] = await connection.query(
-        `
-        INSERT INTO accounts
-          (email, password, verification_token, verification_expire)
-        VALUES (?, ?, ?, ?)
-        `,
-        [email, passwordHash, token, expires],
-      );
-
-      const accountId = accountResult.insertId;
-
-      const [userResult] = await connection.query(
-        `
-        INSERT INTO users
-          (account_id, username)
-        VALUES (?, ?)
-        `,
-        [accountId, username],
-      );
-
-      await connection.commit();
-      return userResult.insertId;
-    } catch (error) {
-      await connection.rollback();
-      throw error;
-    } finally {
-      connection.release();
+    if (!connection && !this.pool) {
+      throw new Error("Database pool not initialized in AccountRepository");
     }
+    const queryFn = connection
+      ? connection.query.bind(connection)
+      : this.pool.query.bind(this.pool);
+    const [result] = await queryFn(
+      `
+      INSERT INTO accounts
+        (email, password, verification_token, verification_expire)
+      VALUES (?, ?, ?, ?)
+      `,
+      [email, passwordHash, token, expires],
+    );
+    return result.insertId;
   }
 
   /**
-   * Retrieves an account by verification token
-   * @param {string} token - Verification token
-   * @returns {Promise<Object|null>} Account with linked user or null if not found
+   * Get account + linked user by verification token.
+   * @param {string} token
+   * @returns {Promise<Object|null>}
    */
   async getAccountByVerificationToken(token) {
     const [rows] = await this.pool.query(
@@ -109,17 +91,17 @@ class AccountRepository extends BaseRepository {
   }
 
   /**
-   * Activates a user account and clears the verification token
-   * @param {number} accountId - Account's ID
-   * @returns {Promise<boolean>} True if activation was successful
+   * Activate account (set is_active=true, clear token).
+   * @param {number} accountId
+   * @returns {Promise<boolean>} Success
    */
   async activateAccount(accountId) {
     const [result] = await this.pool.query(
       `
       UPDATE accounts
       SET
-        is_active          = true,
-        verification_token  = NULL,
+        is_active = true,
+        verification_token = NULL,
         verification_expire = NULL
       WHERE account_id = ?
       `,
@@ -130,9 +112,9 @@ class AccountRepository extends BaseRepository {
   }
 
   /**
-   * Retrieves the password hash for a user
-   * @param {number} userId - User's ID
-   * @returns {Promise<string|null>} Password hash or null if not found
+   * Get password hash by user_id.
+   * @param {number} userId
+   * @returns {Promise<string|null>} password_hash
    */
   async getPasswordHashByUserId(userId) {
     const [rows] = await this.pool.query(
@@ -150,21 +132,41 @@ class AccountRepository extends BaseRepository {
   }
 
   /**
-   * Updates the password for a user's account
-   * @param {number} userId - User's ID
-   * @param {string} newPasswordHash - New hashed password
-   * @returns {Promise<boolean>} True if password was updated successfully
+   * Update password by user_id.
+   * @param {number} userId
+   * @param {string} newPasswordHash
+   * @returns {Promise<boolean>} Success
    */
   async updatePasswordByUserId(userId, newPasswordHash) {
     const [result] = await this.pool.query(
       `
       UPDATE accounts a
       JOIN users u ON a.account_id = u.account_id
-      SET a.password   = ?,
+      SET a.password = ?,
           a.updated_at = NOW()
       WHERE u.user_id = ?
       `,
       [newPasswordHash, userId],
+    );
+
+    return result.affectedRows > 0;
+  }
+
+  /**
+   * Assign role to user (updates accounts.role).
+   * @param {number} userId - Target user_id
+   * @param {'USER' | 'MOD' | 'ADMIN'} role - New role
+   * @returns {Promise<boolean>} Success
+   */
+  async assignRoleToUser(userId, role) {
+    const [result] = await this.pool.query(
+      `
+      UPDATE accounts a
+      JOIN users u ON a.account_id = u.account_id
+      SET a.role = ?
+      WHERE u.user_id = ?
+      `,
+      [role, userId],
     );
 
     return result.affectedRows > 0;

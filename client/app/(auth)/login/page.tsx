@@ -2,58 +2,40 @@
 import React, { useState } from "react";
 import fetchApi from "@/utils/fetchApi";
 import useNavigate from "@/hooks/useNavigate";
+import useForm from "@/hooks/useForm";
+
 type LoginFormData = {
   email: string;
   password: string;
 };
 
-const Login: React.FC = () => {
-  const [form, setForm] = useState<LoginFormData>({
-    email: "",
-    password: "",
-  });
-
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!form.email || !form.password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    setError("");
-    setLoading(true);
-
-    try {
-      const result = await fetchApi(
-        "http://localhost:4000/auth/login",
-        "POST",
-        form,
-      );
-
-      if (result.error) {
-        setError(result.error);
-      } else if (result.response) {
-        localStorage.setItem("token", result.response.token);
-        navigate("/");
-      }
-    } catch (err) {
-      setError("Login failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function Login() {
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState("");
+
+  const { values, errors, loading, handleChange, handleSubmit } =
+    useForm<LoginFormData>({
+      initialValues: { email: "", password: "" },
+
+      validate: (v) => {
+        const errs: Partial<Record<keyof LoginFormData, string>> = {};
+        if (!v.email) errs.email = "Email is required";
+        if (!v.password) errs.password = "Password is required";
+        return errs;
+      },
+
+      onSubmit: async (v) => {
+        setServerError("");
+        const result = await fetchApi("/auth/login", "POST", v);
+        if (result.error) {
+          setServerError(result.error);
+        } else {
+          localStorage.setItem("accessToken", result.response.token);
+          navigate("/");
+        }
+      },
+    });
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
@@ -61,9 +43,9 @@ const Login: React.FC = () => {
           Login
         </h2>
 
-        {error && (
+        {serverError && (
           <div className="mb-4 rounded bg-red-100 p-2 text-sm text-red-600">
-            {error}
+            {serverError}
           </div>
         )}
 
@@ -75,11 +57,14 @@ const Login: React.FC = () => {
             <input
               type="email"
               name="email"
-              value={form.email}
+              value={values.email}
               onChange={handleChange}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
               placeholder="example@email.com"
             />
+            {errors.email && (
+              <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -89,11 +74,14 @@ const Login: React.FC = () => {
             <input
               type="password"
               name="password"
-              value={form.password}
+              value={values.password}
               onChange={handleChange}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
               placeholder="••••••••"
             />
+            {errors.password && (
+              <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+            )}
           </div>
 
           <button
@@ -101,7 +89,7 @@ const Login: React.FC = () => {
             disabled={loading}
             className={`w-full rounded-lg py-2 font-semibold text-white transition ${
               loading
-                ? "bg-gray-400 cursor-not-allowed"
+                ? "cursor-not-allowed bg-gray-400"
                 : "bg-foreground hover:bg-blue-600"
             }`}
           >
@@ -121,6 +109,4 @@ const Login: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Login;
+}

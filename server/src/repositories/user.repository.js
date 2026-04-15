@@ -9,10 +9,40 @@ class UserRepository extends BaseRepository {
     super("users");
   }
 
-  // /**
-  //  * Retrieves a paginated list of users
-  //  * @param {number} limit - Maximum number of users to return
-  //  * @param {number} offset - Number of users to skip
+  /**
+   * Creates a new user linked to an account
+   * @param {number} accountId - Account ID
+   * @param {string} name - User's username (maps to DB 'username' column)
+   * @param {string} [bio] - Optional bio
+   * @param {number} [reputation=0] - Optional reputation score (default 0)
+   * @returns {Promise<number>} Inserted user ID
+   */
+  async createUser(
+    accountId,
+    name,
+    bio = null,
+    reputation = 0,
+    connection = null,
+  ) {
+    if (!connection && !this.pool) {
+      throw new Error("Database pool not initialized in UserRepository");
+    }
+    const queryFn = connection
+      ? connection.query.bind(connection)
+      : this.pool
+        ? this.pool.query.bind(this.pool)
+        : null;
+    if (!queryFn) throw new Error("No valid query function available");
+    const [result] = await queryFn(
+      `
+      INSERT INTO users (account_id, username, bio, reputation)
+      VALUES (?, ?, ?, ?)
+      `,
+      [accountId, name, bio, reputation],
+    );
+    return result.insertId;
+  }
+
   /**
    * Retrieves a paginated list of users
    * @param {number} limit - Maximum number of users to return
@@ -22,16 +52,17 @@ class UserRepository extends BaseRepository {
   async getUserList(limit, offset) {
     const [rows] = await this.pool.query(
       `
-    SELECT
-      u.user_id,
-      u.username,
-      u.avatar,
-      u.bio,
-      u.created_at
-    FROM users u
-    ORDER BY u.created_at DESC
-    LIMIT ? OFFSET ?
-    `,
+      SELECT
+        user_id,
+        username,
+        avatar,
+        bio,
+        reputation,
+        created_at
+      FROM users
+      ORDER BY created_at DESC
+      LIMIT ? OFFSET ?
+      `,
       [limit, offset],
     );
 
@@ -55,6 +86,7 @@ class UserRepository extends BaseRepository {
         u.username,
         u.avatar,
         u.bio,
+        u.reputation,
         a.email,
         a.role,
         u.created_at
@@ -72,19 +104,16 @@ class UserRepository extends BaseRepository {
   /**
    * Updates user profile fields dynamically based on provided data
    * @param {number} userId - User's ID
-   * @param {Object} data - Fields to update
-   * @param {string} [data.username] - New username
-   * @param {string} [data.avatar]   - New avatar URL
-   * @param {string} [data.bio]      - New bio
-   * @returns {Promise<boolean>} True if update was successful, false otherwise
+   * @param {Object} data - Fields to update {name/username, avatar, bio, reputation}
+   * @returns {Promise<boolean>} True if update was successful
    */
-  async updateUserInfo(userId, { username, avatar, bio }) {
+  async updateUserInfo(userId, { username, avatar, bio, reputation }) {
     const fields = [];
     const values = [];
 
     if (username !== undefined) {
       fields.push("username = ?");
-      values.push(username);
+      values.push(name);
     }
 
     if (avatar !== undefined) {
@@ -95,6 +124,11 @@ class UserRepository extends BaseRepository {
     if (bio !== undefined) {
       fields.push("bio = ?");
       values.push(bio);
+    }
+
+    if (reputation !== undefined) {
+      fields.push("reputation = ?");
+      values.push(reputation);
     }
 
     if (fields.length === 0) return false;
@@ -115,29 +149,8 @@ class UserRepository extends BaseRepository {
   }
 
   /**
-   * Updates the role of a user's linked account
-   * @param {number} userId - User's ID
-   * @param {string} role   - New role ('USER' | 'ADMIN')
-   * @returns {Promise<boolean>} True if update was successful
-   */
-  async updateUserRole(userId, role) {
-    const [result] = await this.pool.query(
-      `
-      UPDATE accounts a
-      JOIN users u ON a.account_id = u.account_id
-      SET a.role       = ?,
-          a.updated_at = NOW()
-      WHERE u.user_id = ?
-      `,
-      [role, userId],
-    );
-
-    return result.affectedRows > 0;
-  }
-
-  /**
    * Deletes a user and their linked account from the database
-   * Cascades automatically via FK: deleting the account removes the user row
+   * Cascades automatically via FK
    * @param {number} userId - User's ID
    * @returns {Promise<boolean>} True if deletion was successful
    */
