@@ -1,6 +1,6 @@
 "use client";
 import useNavigate from "@/hooks/useNavigate";
-export default function Home() {
+export default function ClientLayout() {
   const navigate = useNavigate();
 
   return (

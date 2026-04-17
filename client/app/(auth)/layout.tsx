@@ -1,7 +1,7 @@
 // app/layout.tsx
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
-import AuthHeader from "@/components/AuthHeader";
+import AuthHeader from "@/fragments/AuthHeader";
 
 export default function AuthLayout({
   children,

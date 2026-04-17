@@ -7,7 +7,9 @@ import MenuIcon from "@/components/icons/MenuIcon";
 import CloseIcon from "@/components/icons/CloseIcon";
 import useNavigate from "@/hooks/useNavigate";
 
-export default function Header() {
+import SearchBar from "@/components/general/SearchBar";
+
+export default function ClientHeader() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,14 +56,7 @@ export default function Header() {
         </nav>
 
         {/* Search Bar — desktop only (lg+) */}
-        <div className="hidden lg:flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 w-80 bg-white">
-          <SearchIcon size={16} className="text-gray-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="Search discussions, tags, or users..."
-            className="outline-none text-sm text-gray-400 w-full bg-transparent"
-          />
-        </div>
+        <SearchBar placeholder="Search discussions, tags, or users..." />
 
         {/* Auth Buttons — desktop only (lg+) */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">

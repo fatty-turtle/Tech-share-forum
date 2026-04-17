@@ -1,8 +1,8 @@
 // app/layout.tsx
 
 import "@/app/globals.css";
-import Header from "@/components/MainHeader";
-import Footer from "@/components/MainFooter";
+import ClientHeader from "@/fragments/client/MainHeader";
+import ClientFooter from "@/fragments/client/MainFooter";
 
 export default function HomeLayout({
   children,
@@ -11,9 +11,9 @@ export default function HomeLayout({
 }) {
   return (
     <>
-      <Header />
+      <ClientHeader />
       <main>{children}</main>
-      <Footer />
+      <ClientFooter />
     </>
   );
 }
