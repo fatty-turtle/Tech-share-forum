@@ -26,6 +26,26 @@ class PostRepository extends BaseRepository {
     return { total, rows };
   }
 
+  async getRecentPosts(limit, offset) {
+    const [rows] = await this.pool.query(
+      `
+      SELECT 
+        p.*,
+        u.username AS author_name,
+        u.avatar AS author_avatar
+      FROM posts p
+      JOIN users u ON u.user_id = p.author_id
+      ORDER BY p.created_at DESC
+      LIMIT ? OFFSET ?
+      `,
+      [limit, offset],
+    );
+    const [[{ total }]] = await this.pool.query(
+      `SELECT COUNT(*) AS total FROM posts`,
+    );
+    return { total, rows };
+  }
+
   async getTrendPosts(tagName, limit, offset) {
     let query = `
       SELECT 

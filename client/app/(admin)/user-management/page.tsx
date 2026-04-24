@@ -35,21 +35,25 @@ export default function UserManagement() {
       </article>
       <article>
         <table className="w-full bg-box rounded-2xl p-4">
-          <tr className="bg-gray-200 h-18 ">
-            <th>Post Title</th>
-            <th>Author</th>
-            <th>Date</th>
-            <th>Action</th>
-          </tr>
-          <tr className="text-center h-18">
-            <td>some thing</td>
-            <td>some one</td>
-            <td>some date</td>
-            <td className="text-center space-x-2">
-              <button>Edit</button>
-              <button>Delete</button>
-            </td>
-          </tr>
+          <thead>
+            <tr className="bg-gray-200 h-18 ">
+              <th>Post Title</th>
+              <th>Author</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-center h-18">
+              <td>some thing</td>
+              <td>some one</td>
+              <td>some date</td>
+              <td className="text-center space-x-2">
+                <button>Edit</button>
+                <button>Delete</button>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </article>
     </section>

@@ -53,13 +53,16 @@ class UserRepository extends BaseRepository {
     const [rows] = await this.pool.query(
       `
       SELECT
-        user_id,
-        username,
-        avatar,
-        bio,
-        reputation,
-        created_at
-      FROM users
+        u.user_id,
+        u.username,
+        u.avatar,
+        u.bio,
+        u.reputation,
+        a.email,
+        a.role,
+        u.created_at
+      FROM ${this.tableName} u
+      LEFT JOIN accounts a ON u.account_id = a.account_id
       ORDER BY created_at DESC
       LIMIT ? OFFSET ?
       `,
@@ -67,10 +70,21 @@ class UserRepository extends BaseRepository {
     );
 
     const [[{ total }]] = await this.pool.query(
-      `SELECT COUNT(*) AS total FROM users`,
+      `SELECT COUNT(*) AS total FROM ${this.tableName}`,
     );
 
     return { total, rows };
+  }
+
+  /**
+   * Counts users created today (since midnight)
+   * @returns {Promise<number>} Number of new users today
+   */
+  async countNewUsersToday() {
+    const [[{ total }]] = await this.pool.query(
+      `SELECT COUNT(*) AS total FROM ${this.tableName} WHERE created_at >= CURDATE()`,
+    );
+    return total;
   }
 
   /**
@@ -90,7 +104,7 @@ class UserRepository extends BaseRepository {
         a.email,
         a.role,
         u.created_at
-      FROM users u
+      FROM ${this.tableName} u
       LEFT JOIN accounts a ON u.account_id = a.account_id
       WHERE u.user_id = ?
       LIMIT 1
@@ -137,7 +151,7 @@ class UserRepository extends BaseRepository {
 
     const [result] = await this.pool.query(
       `
-      UPDATE users
+      UPDATE ${this.tableName}
       SET ${fields.join(", ")},
           updated_at = NOW()
       WHERE user_id = ?
@@ -159,7 +173,7 @@ class UserRepository extends BaseRepository {
       `
       DELETE a
       FROM accounts a
-      JOIN users u ON a.account_id = u.account_id
+      JOIN ${this.tableName} u ON a.account_id = u.account_id
       WHERE u.user_id = ?
       `,
       [userId],

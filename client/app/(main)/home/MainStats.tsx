@@ -34,7 +34,7 @@ function formatCount(n: number): string {
   return String(n);
 }
 
-export default function DashBoard({
+export default function MainStats({
   trendTags,
   topContributors = [],
   communityStats,

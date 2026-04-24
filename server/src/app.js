@@ -6,6 +6,8 @@ import { Server } from "socket.io";
 import accRoute from "./routes/account.routes.js";
 import postRoute from "./routes/post.routes.js";
 import tagRoute from "./routes/tag.routes.js";
+import dashboardRoute from "./routes/dashboard.routes.js";
+
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 dotenv.config();
@@ -23,6 +25,7 @@ app.use(express.json());
 app.use("/auth", accRoute);
 app.use("/post", postRoute);
 app.use("/tag", tagRoute);
+app.use("/dashboard", dashboardRoute);
 
 app.use(errorMiddleware);
 
