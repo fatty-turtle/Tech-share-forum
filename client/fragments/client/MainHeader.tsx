@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import MenuIcon from "@/components/icons/MenuIcon";
 import CloseIcon from "@/components/icons/CloseIcon";
 import useNavigate from "@/hooks/useNavigate";
-
 import SearchBar from "@/components/general/SearchBar";
+import { logout } from "@/hooks/lib/apiClient";
 
 export default function ClientHeader() {
   const router = useRouter();
@@ -20,8 +20,8 @@ export default function ClientHeader() {
     setIsLoggedIn(!!token);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
+  const handleLogout = async () => {
+    await logout();
     setIsLoggedIn(false);
     navigate("/login");
   };

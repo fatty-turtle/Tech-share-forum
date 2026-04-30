@@ -3,7 +3,7 @@ import { initDB, getPool, setDB } from "./config/db.config.js";
 
 dotenv.config();
 
-const PORT = process.env.SERVER_PORT || 3000;
+const PORT = process.env.SERVER_PORT;
 
 /**
  * Starts the Express server and initializes the database

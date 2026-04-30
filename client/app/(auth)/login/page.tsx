@@ -1,20 +1,29 @@
 "use client";
-import React, { useState } from "react";
-import fetchApi from "@/utils/fetchApi";
+import React from "react";
 import useNavigate from "@/hooks/useNavigate";
 import useForm from "@/hooks/useForm";
+import { usePostApi } from "@/hooks/api/usePostApi";
 
 type LoginFormData = {
   email: string;
   password: string;
 };
 
+type LoginResponse = {
+  token: string;
+};
+
 export default function Login() {
   const navigate = useNavigate();
-  const [serverError, setServerError] = useState("");
 
-  const { values, errors, loading, handleChange, handleSubmit } =
-    useForm<LoginFormData>({
+  const {
+    mutate,
+    loading,
+    error: serverError,
+  } = usePostApi<LoginResponse, LoginFormData>("/auth/login");
+
+  const { values, errors, handleChange, handleSubmit } = useForm<LoginFormData>(
+    {
       initialValues: { email: "", password: "" },
 
       validate: (v) => {
@@ -25,16 +34,14 @@ export default function Login() {
       },
 
       onSubmit: async (v) => {
-        setServerError("");
-        const result = await fetchApi("/auth/login", "POST", v);
-        if (result.error) {
-          setServerError(result.error);
-        } else {
-          localStorage.setItem("accessToken", result.response.token);
+        const result = await mutate(v);
+        if (result.data) {
+          localStorage.setItem("accessToken", result.data.token);
           navigate("/");
         }
       },
-    });
+    },
+  );
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -45,7 +52,7 @@ export default function Login() {
 
         {serverError && (
           <div className="mb-4 rounded bg-red-100 p-2 text-sm text-red-600">
-            {serverError}
+            {serverError.message}
           </div>
         )}
 

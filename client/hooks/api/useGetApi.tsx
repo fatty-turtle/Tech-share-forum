@@ -5,15 +5,10 @@ import { ApiError, ApiResponse, fetchApi } from "../lib/apiClient";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface UseGetApiOptions<T> {
-  /** Fire the request immediately on mount. Defaults to `true`. */
   immediate?: boolean;
-  /** Initial data before the first successful response. */
   initialData?: T;
-  /** Called after a successful fetch. */
   onSuccess?: (data: T) => void;
-  /** Called after a failed fetch. */
   onError?: (error: ApiError) => void;
-  /** Additional Axios config (e.g. params, signal). */
   axiosConfig?: AxiosRequestConfig;
 }
 
@@ -22,9 +17,7 @@ interface UseGetApiReturn<T> {
   error: ApiError | null;
   loading: boolean;
   status: number | null;
-  /** Manually trigger (or re-trigger) the request. */
   refetch: (overrideConfig?: AxiosRequestConfig) => Promise<ApiResponse<T>>;
-  /** Reset state back to its initial values. */
   reset: () => void;
 }
 

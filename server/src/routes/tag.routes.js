@@ -1,6 +1,5 @@
 import express from "express";
 import { authenticate } from "../middlewares/authentication.middleware.js";
-import { authorize } from "../middlewares/authorization.middleware.js";
 import { apiRateLimiter } from "../middlewares/rateLimit.middleware.js";
 
 import TagController from "../controllers/tag.controller.js";

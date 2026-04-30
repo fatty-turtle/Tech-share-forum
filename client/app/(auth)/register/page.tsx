@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
-import fetchApi from "@/utils/fetchApi";
+import React from "react";
 import useNavigate from "@/hooks/useNavigate";
 import useForm from "@/hooks/useForm";
+import { usePostApi } from "@/hooks/api/usePostApi";
 
 type RegisterFormData = {
   username: string;
@@ -11,11 +11,20 @@ type RegisterFormData = {
   confirmPassword: string;
 };
 
+type RegisterResponse = {
+  message: string;
+};
+
 export default function Register() {
   const navigate = useNavigate();
-  const [serverError, setServerError] = useState("");
 
-  const { values, errors, loading, handleChange, handleSubmit } =
+  const {
+    mutate,
+    loading,
+    error: serverError,
+  } = usePostApi<RegisterResponse, RegisterFormData>("/auth/register");
+
+  const { values, errors, handleChange, handleSubmit } =
     useForm<RegisterFormData>({
       initialValues: {
         username: "",
@@ -37,11 +46,8 @@ export default function Register() {
       },
 
       onSubmit: async (v) => {
-        setServerError("");
-        const result = await fetchApi("/auth/register", "POST", v);
-        if (result.error) {
-          setServerError(result.error);
-        } else {
+        const result = await mutate(v);
+        if (result.data) {
           alert(
             "Registration successful! Please check your email to verify your account.",
           );
@@ -59,7 +65,7 @@ export default function Register() {
 
         {serverError && (
           <div className="mb-4 rounded bg-red-100 p-2 text-sm text-red-600">
-            {serverError}
+            {serverError.message}
           </div>
         )}
 
