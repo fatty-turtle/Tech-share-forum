@@ -3,6 +3,9 @@ import React from "react";
 import useNavigate from "@/hooks/useNavigate";
 import useForm from "@/hooks/useForm";
 import { usePostApi } from "@/hooks/api/usePostApi";
+import { useAppDispatch } from "@/hooks/lib/useAppDispatch";
+import { setUser } from "@/store/authSlice";
+import { decodeJwt, hasAdminRole } from "@/utils/jwt";
 
 type LoginFormData = {
   email: string;
@@ -10,11 +13,13 @@ type LoginFormData = {
 };
 
 type LoginResponse = {
-  token: string;
+  accessToken: string;
+  roles?: string[];
 };
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const {
     mutate,
@@ -36,8 +41,29 @@ export default function Login() {
       onSubmit: async (v) => {
         const result = await mutate(v);
         if (result.data) {
-          localStorage.setItem("accessToken", result.data.token);
-          navigate("/");
+          localStorage.setItem("accessToken", result.data.accessToken);
+
+          // Decode token and store user info in Redux
+          const payload = decodeJwt(result.data.accessToken);
+          if (payload) {
+            dispatch(
+              setUser({
+                user_id: payload.user_id,
+                roles: payload.roles,
+                email: payload.email,
+                username: payload.username,
+              }),
+            );
+
+            // Redirect based on role
+            if (hasAdminRole(payload.roles)) {
+              navigate("/dashboard");
+            } else {
+              navigate("/");
+            }
+          } else {
+            navigate("/");
+          }
         }
       },
     },

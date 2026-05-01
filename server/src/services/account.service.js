@@ -41,10 +41,17 @@ class AccountService {
       throw new Error("Account is not activated");
     }
 
-    const accessToken = createToken({ user_id: user.user_id, role: user.role });
+    const accessToken = createToken({
+      user_id: user.user_id,
+      role: user.role,
+      email: user.email,
+      username: user.username,
+    });
     const refreshToken = createRefreshToken({
       user_id: user.user_id,
       role: user.role,
+      email: user.email,
+      username: user.username,
     });
 
     return { accessToken, refreshToken };
@@ -135,10 +142,17 @@ class AccountService {
       throw new Error("Account not found or inactive");
     }
 
-    const accessToken = createToken({ user_id: user.user_id, role: user.role });
+    const accessToken = createToken({
+      user_id: user.user_id,
+      role: user.role,
+      email: user.email,
+      username: user.username,
+    });
     const refreshToken = createRefreshToken({
       user_id: user.user_id,
       role: user.role,
+      email: user.email,
+      username: user.username,
     });
 
     return { accessToken, refreshToken };

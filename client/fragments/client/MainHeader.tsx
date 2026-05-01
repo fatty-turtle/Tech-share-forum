@@ -1,28 +1,22 @@
 "use client";
 import SearchIcon from "@/components/icons/SearchIcon";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LogoIcon from "@/components/icons/LogoIcon";
 import { useRouter } from "next/navigation";
 import MenuIcon from "@/components/icons/MenuIcon";
 import CloseIcon from "@/components/icons/CloseIcon";
 import useNavigate from "@/hooks/useNavigate";
 import SearchBar from "@/components/general/SearchBar";
-import { logout } from "@/hooks/lib/apiClient";
+import { useAuth } from "@/hooks/lib/useAuth";
 
 export default function ClientHeader() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!token);
-  }, []);
 
   const handleLogout = async () => {
     await logout();
-    setIsLoggedIn(false);
     navigate("/login");
   };
 
@@ -60,7 +54,7 @@ export default function ClientHeader() {
 
         {/* Auth Buttons — desktop only (lg+) */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <button
               className="text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
               onClick={handleLogout}
@@ -127,7 +121,7 @@ export default function ClientHeader() {
 
           {/* Auth */}
           <div className="flex flex-col gap-2 pt-1 border-t border-gray-100">
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <button
                 className="w-full text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors text-left"
                 onClick={() => {

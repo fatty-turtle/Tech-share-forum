@@ -1,7 +1,8 @@
 import DashBoardIcon from "@/components/icons/DashBoardIcon";
 import UsersIcon from "@/components/icons/UsersIcon";
-import HammerIcon from "@/components/icons/HammerIcon";
+// import HammerIcon from "@/components/icons/HammerIcon";
 import CogIcon from "@/components/icons/CogIcon";
+import LogoutIcon from "@/components/icons/LogoutIcon";
 const actions = [
   {
     name: "Dashboard",
@@ -22,6 +23,12 @@ const actions = [
     name: "Settings",
     icon: <CogIcon />,
     route: "/settings",
+  },
+  {
+    name: "Logout",
+    icon: <LogoutIcon />,
+    route: "/login",
+    isAction: true,
   },
 ];
 
