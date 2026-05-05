@@ -6,6 +6,9 @@ import { Server } from "socket.io";
 import accRoute from "./routes/account.routes.js";
 import postRoute from "./routes/post.routes.js";
 import tagRoute from "./routes/tag.routes.js";
+import dashboardRoute from "./routes/dashboard.routes.js";
+import cookieParser from "cookie-parser";
+
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 dotenv.config();
@@ -19,10 +22,12 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/auth", accRoute);
 app.use("/post", postRoute);
 app.use("/tag", tagRoute);
+app.use("/dashboard", dashboardRoute);
 
 app.use(errorMiddleware);
 
@@ -30,7 +35,7 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: `http://localhost:${process.env.CLIENT_PORT}`,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "CREATE", "DELETE"],
     credentials: true,
   },
 });

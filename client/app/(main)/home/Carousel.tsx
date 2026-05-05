@@ -1,7 +1,7 @@
 "use client";
 
 // import Swiper core and required modules
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import { Navigation, Pagination, A11y } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -43,16 +43,18 @@ export default function Carousel() {
       pagination={{ clickable: true }}
       onSwiper={(swiper) => console.log(swiper)}
       onSlideChange={() => console.log("slide change")}
-      className="w-7xl mt-5 mb-5 rounded-2xl"
+      className="w-full max-w-6xl mx-auto mt-5 mb-5 rounded-2xl px-4 sm:px-6"
     >
       {samples.map((sample, i) => (
         <SwiperSlide key={i}>
-          <div className="flex flex-col items-center justify-center text-center h-90 bg-foreground text-white">
+          <div className="flex flex-col items-center justify-center text-center min-h-[400px] md:min-h-[500px] bg-foreground text-white p-5 ">
             <h1 className="text-3xl mb-4 font-bold text-background-box">
               {sample.title}
             </h1>
-            <p className="w-90 mb-8 text-blue-200">{sample.content}</p>
-            <button className="w-50 font-bold cursor-pointer bg-box text-foreground h-12 rounded-2xl hover:bg-blue-200">
+            <p className="max-w-4xl mx-auto mb-8 text-blue-200 px-4">
+              {sample.content}
+            </p>
+            <button className="w-full max-w-sm sm:max-w-md font-bold cursor-pointer bg-box text-foreground h-12 rounded-2xl hover:bg-blue-200 mx-auto">
               {sample.button}
             </button>
           </div>

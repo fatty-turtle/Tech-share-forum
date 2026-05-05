@@ -1,20 +1,34 @@
 "use client";
-import React, { useState } from "react";
-import fetchApi from "@/utils/fetchApi";
+import React from "react";
 import useNavigate from "@/hooks/useNavigate";
 import useForm from "@/hooks/useForm";
+import { usePostApi } from "@/hooks/api/usePostApi";
+import { useAppDispatch } from "@/hooks/lib/useAppDispatch";
+import { setUser } from "@/store/authSlice";
+import { decodeJwt, hasAdminRole } from "@/utils/jwt";
 
 type LoginFormData = {
   email: string;
   password: string;
 };
 
+type LoginResponse = {
+  accessToken: string;
+  roles?: string[];
+};
+
 export default function Login() {
   const navigate = useNavigate();
-  const [serverError, setServerError] = useState("");
+  const dispatch = useAppDispatch();
 
-  const { values, errors, loading, handleChange, handleSubmit } =
-    useForm<LoginFormData>({
+  const {
+    mutate,
+    loading,
+    error: serverError,
+  } = usePostApi<LoginResponse, LoginFormData>("/auth/login");
+
+  const { values, errors, handleChange, handleSubmit } = useForm<LoginFormData>(
+    {
       initialValues: { email: "", password: "" },
 
       validate: (v) => {
@@ -25,31 +39,50 @@ export default function Login() {
       },
 
       onSubmit: async (v) => {
-        setServerError("");
-        const result = await fetchApi("/auth/login", "POST", v);
-        if (result.error) {
-          setServerError(result.error);
-        } else {
-          localStorage.setItem("accessToken", result.response.token);
-          navigate("/");
+        const result = await mutate(v);
+        if (result.data) {
+          localStorage.setItem("accessToken", result.data.accessToken);
+
+          // Decode token and store user info in Redux
+          const payload = decodeJwt(result.data.accessToken);
+          if (payload) {
+            dispatch(
+              setUser({
+                user_id: payload.user_id,
+                roles: payload.roles,
+                email: payload.email,
+                username: payload.username,
+              }),
+            );
+
+            // Redirect based on role
+            if (hasAdminRole(payload.roles)) {
+              navigate("/dashboard");
+            } else {
+              navigate("/");
+            }
+          } else {
+            navigate("/");
+          }
         }
       },
-    });
+    },
+  );
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+      <div className="w-full max-w-sm sm:max-w-md mx-auto px-4 sm:px-0 rounded-xl bg-white p-6 sm:p-8 shadow-lg">
         <h2 className="mb-6 text-center text-2xl font-bold text-foreground">
           Login
         </h2>
 
         {serverError && (
           <div className="mb-4 rounded bg-red-100 p-2 text-sm text-red-600">
-            {serverError}
+            {serverError.message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-600">
               Email
@@ -98,7 +131,7 @@ export default function Login() {
         </form>
 
         <p className="mt-4 text-center text-sm text-gray-500">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <span
             className="cursor-pointer text-blue-500 hover:underline"
             onClick={() => navigate("/register")}
