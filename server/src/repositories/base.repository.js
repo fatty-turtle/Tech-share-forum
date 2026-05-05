@@ -54,6 +54,13 @@ class BaseRepository {
     return rows[0];
   }
 
+  async getTotal() {
+    const [[{ total }]] = await this.pool.query(
+      `SELECT COUNT(*) AS total FROM ${this.tableName}`,
+    );
+    return total;
+  }
+
   /**
    * Creates a new record in the table
    * @param {Object} data - Data object with field names as keys

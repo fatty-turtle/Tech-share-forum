@@ -1,33 +1,28 @@
 "use client";
 import SearchIcon from "@/components/icons/SearchIcon";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LogoIcon from "@/components/icons/LogoIcon";
-import { useRouter } from "next/navigation";
 import MenuIcon from "@/components/icons/MenuIcon";
 import CloseIcon from "@/components/icons/CloseIcon";
 import useNavigate from "@/hooks/useNavigate";
+import SearchBar from "@/components/general/SearchBar";
+import { useAuth } from "@/hooks/lib/useAuth";
 
-export default function Header() {
-  const router = useRouter();
+export default function ClientHeader() {
+  // const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!token);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await logout();
     navigate("/login");
   };
 
   return (
     <header className="relative bg-background-box border-b border-gray-200 font-inter">
       {/* ─── Main bar ─── */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-3 gap-4">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 gap-4">
         {/* Brand */}
         <div
           className="flex items-center gap-2 cursor-pointer shrink-0"
@@ -39,7 +34,7 @@ export default function Header() {
 
         {/* Nav — desktop only (lg+) */}
         <nav className="hidden lg:block">
-          <ul className="flex gap-8 font-medium">
+          <ul className="flex gap-6 lg:gap-8 font-medium">
             {["Discussions", "Tutorials", "Events"].map((item) => (
               <li key={item}>
                 <a
@@ -54,18 +49,11 @@ export default function Header() {
         </nav>
 
         {/* Search Bar — desktop only (lg+) */}
-        <div className="hidden lg:flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 w-80 bg-white">
-          <SearchIcon size={16} className="text-gray-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="Search discussions, tags, or users..."
-            className="outline-none text-sm text-gray-400 w-full bg-transparent"
-          />
-        </div>
+        <SearchBar placeholder="Search discussions, tags, or users..." />
 
         {/* Auth Buttons — desktop only (lg+) */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <button
               className="text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors"
               onClick={handleLogout}
@@ -132,7 +120,7 @@ export default function Header() {
 
           {/* Auth */}
           <div className="flex flex-col gap-2 pt-1 border-t border-gray-100">
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <button
                 className="w-full text-sm text-white font-medium px-4 py-2 bg-foreground rounded-md hover:bg-[#15294a] transition-colors text-left"
                 onClick={() => {

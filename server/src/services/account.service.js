@@ -1,9 +1,13 @@
 import AccountRepository from "../repositories/account.repository.js";
 import UserRepository from "../repositories/user.repository.js";
 import bcrypt from "bcrypt";
-import { createToken } from "../utils/jwt.utils.js";
+import jwt from "jsonwebtoken";
+import { createToken, createRefreshToken } from "../utils/jwt.utils.js";
 import { sendVerificationEmail } from "../utils/mail.utils.js";
 import crypto from "crypto";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 /**
  * Service for handling authentication operations
@@ -37,14 +41,20 @@ class AccountService {
       throw new Error("Account is not activated");
     }
 
-    const token = createToken({
+    const accessToken = createToken({
       user_id: user.user_id,
       role: user.role,
+      email: user.email,
+      username: user.username,
+    });
+    const refreshToken = createRefreshToken({
+      user_id: user.user_id,
+      role: user.role,
+      email: user.email,
+      username: user.username,
     });
 
-    return {
-      token,
-    };
+    return { accessToken, refreshToken };
   }
 
   /**
@@ -107,6 +117,45 @@ class AccountService {
     }
 
     await this.accountRepository.activateAccount(user.account_id);
+  }
+
+  /**
+   * Refreshes the access token using a valid refresh token from cookie
+   * @param {string} rawRefreshToken - Refresh token from cookie
+   * @returns {Promise<{accessToken: string}>} New access token
+   * @throws {Error} If refresh token is invalid
+   */
+  async refresh(rawRefreshToken) {
+    if (!rawRefreshToken) {
+      throw new Error("Refresh token missing");
+    }
+
+    let payload;
+    try {
+      payload = jwt.verify(rawRefreshToken, process.env.JWT_REFRESH_SECRET);
+    } catch {
+      throw new Error("Invalid or expired refresh token");
+    }
+
+    const user = await this.accountRepository.getAccountById(payload.user_id);
+    if (!user || !user.is_active) {
+      throw new Error("Account not found or inactive");
+    }
+
+    const accessToken = createToken({
+      user_id: user.user_id,
+      role: user.role,
+      email: user.email,
+      username: user.username,
+    });
+    const refreshToken = createRefreshToken({
+      user_id: user.user_id,
+      role: user.role,
+      email: user.email,
+      username: user.username,
+    });
+
+    return { accessToken, refreshToken };
   }
 }
 

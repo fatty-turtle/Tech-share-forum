@@ -1,4 +1,9 @@
 import AccountService from "../services/account.service.js";
+import {
+  setRefreshTokenCookie,
+  clearRefreshTokenCookie,
+  getRefreshTokenFromCookie,
+} from "../utils/cookie.utils.js";
 
 const accService = new AccountService();
 
@@ -16,18 +21,22 @@ class AccountController {
     try {
       const { email, password } = req.body;
 
-      const result = await accService.login(email, password);
+      const { accessToken, refreshToken } = await accService.login(
+        email,
+        password,
+      );
+
+      setRefreshTokenCookie(res, refreshToken);
 
       return res.status(200).json({
         status_code: 200,
         message: "Login successful",
-        user: result.user,
-        token: result.token,
+        accessToken,
       });
     } catch (err) {
       return res.status(401).json({
         status_code: 401,
-        message: err.message || "Invalid credentials",
+        message: err.message,
       });
     }
   }
@@ -53,6 +62,30 @@ class AccountController {
         status_code: 400,
         message: err.message,
       });
+    }
+  }
+
+  async refresh(req, res) {
+    try {
+      const rawRefreshToken = getRefreshTokenFromCookie(req);
+      const { accessToken, refreshToken } =
+        await accService.refresh(rawRefreshToken);
+
+      setRefreshTokenCookie(res, refreshToken);
+
+      return res.status(200).json({ status_code: 200, accessToken });
+    } catch (err) {
+      return res.status(401).json({ status_code: 401, message: err.message });
+    }
+  }
+
+  async logout(req, res) {
+    try {
+      clearRefreshTokenCookie(res);
+
+      return res.status(200).json({ status_code: 200, message: "Logged out" });
+    } catch (err) {
+      return res.status(500).json({ status_code: 500, message: err.message });
     }
   }
 

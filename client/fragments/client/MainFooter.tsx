@@ -1,6 +1,6 @@
 import LogoIcon from "@/components/icons/LogoIcon";
 
-export default function Footer() {
+export default function ClientFooter() {
   return (
     <footer className="border-t border-gray-200 bg-box font-inter">
       <div className="flex flex-col md:flex-row items-center justify-between px-6 py-5 gap-4 md:gap-0">

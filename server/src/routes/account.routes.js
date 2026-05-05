@@ -9,5 +9,7 @@ const accController = new AccountController();
 router.post("/login", loginRateLimiter, loginDTO, accController.login);
 router.post("/register", loginRateLimiter, registerDTO, accController.register);
 router.get("/verify-email/:token", loginRateLimiter, accController.verifyEmail);
+router.post("/refresh", accController.refresh);
+router.post("/logout", accController.logout);
 
 export default router;

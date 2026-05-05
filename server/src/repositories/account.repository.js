@@ -171,6 +171,42 @@ class AccountRepository extends BaseRepository {
 
     return result.affectedRows > 0;
   }
+
+  async getEmailById(accountId) {
+    const [rows] = await this.pool.query(
+      `SELECT email FROM accounts WHERE account_id = ? LIMIT 1`,
+      [accountId],
+    );
+    return rows[0]?.email;
+  }
+
+  /**
+   * Get account + linked user by account_id.
+   * @param {number} accountId
+   * @returns {Promise<Object|null>} Account + user data or null
+   */
+  async getAccountById(accountId) {
+    const [rows] = await this.pool.query(
+      `
+      SELECT
+        a.account_id,
+        a.email,
+        a.password AS password_hash,
+        a.role,
+        a.is_active,
+        u.user_id,
+        u.username,
+        u.avatar
+      FROM accounts a
+      LEFT JOIN users u ON a.account_id = u.account_id
+      WHERE a.account_id = ?
+      LIMIT 1
+      `,
+      [accountId],
+    );
+
+    return rows[0] || null;
+  }
 }
 
 export default AccountRepository;
