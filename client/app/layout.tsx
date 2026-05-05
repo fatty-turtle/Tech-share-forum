@@ -9,8 +9,10 @@ export const metadata: Metadata = {
     default: "TechShare Forum | Chia sẻ kiến thức công nghệ",
     template: "%s | TechShare Forum",
   },
-  description: "TechShare - Cộng đồng chia sẻ kiến thức công nghệ, thảo luận xu hướng, tutorial và kinh nghiệm lập trình. Join now!",
-  keywords: "techshare, công nghệ, lập trình, javascript, react, node.js, tutorial, forum",
+  description:
+    "TechShare - Cộng đồng chia sẻ kiến thức công nghệ, thảo luận xu hướng, tutorial và kinh nghiệm lập trình. Join now!",
+  keywords:
+    "techshare, công nghệ, lập trình, javascript, react, node.js, tutorial, forum",
   authors: [{ name: "TechShare Team" }],
   creator: "TechShare Team",
   publisher: "TechShare",
@@ -21,7 +23,8 @@ export const metadata: Metadata = {
   category: "technology",
   openGraph: {
     title: "TechShare Forum | Chia sẻ kiến thức công nghệ",
-    description: "Cộng đồng dành cho developer Việt Nam - chia sẻ kiến thức, thảo luận xu hướng công nghệ mới nhất.",
+    description:
+      "Cộng đồng dành cho developer Việt Nam - chia sẻ kiến thức, thảo luận xu hướng công nghệ mới nhất.",
     url: "http://localhost:3000",
     siteName: "TechShare",
     images: [
@@ -38,7 +41,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "TechShare Forum | Chia sẻ kiến thức công nghệ",
-    description: "Cộng đồng dành cho developer Việt Nam - chia sẻ kiến thức, thảo luận xu hướng công nghệ mới nhất.",
+    description:
+      "Cộng đồng dành cho developer Việt Nam - chia sẻ kiến thức, thảo luận xu hướng công nghệ mới nhất.",
     images: "/twitter-image.jpg", // Add later
   },
   robots: {
@@ -53,10 +57,8 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "google-site-verification-code-here", // Optional
+    google: "google-site-verification-code-here",
   },
-  viewport: "width=device-width, initial-scale=1",
-  themeColor: "#1a355b",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -87,4 +89,3 @@ export default function RootLayout({
     </html>
   );
 }
-
