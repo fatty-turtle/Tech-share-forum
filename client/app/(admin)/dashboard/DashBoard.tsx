@@ -21,30 +21,16 @@ interface DashboardStats {
   };
 }
 
-// interface DeleteResponse {
-//   message: string;
-// }
-
 type FilterType = "all" | "today" | "thisWeek" | "thisMonth";
 
 export default function Dashboard() {
   const router = useRouter();
   const [filter, setFilter] = useState<FilterType>("all");
-  // const [deleteId, setDeleteId] = useState<number | null>(null);
 
   // Fetch dashboard stats
   const { data, loading, error, status, refetch } = useGetApi<DashboardStats>(
     "http://localhost:4000/dashboard",
   );
-
-  // Delete post mutation
-  // const { remove: deletePost, loading: deleting } =
-  //   useDeleteApi<DeleteResponse>("http://localhost:4000/post", {
-  //     onSuccess: () => {
-  //       setDeleteId(null);
-  //       refetch(); // Refresh after delete
-  //     },
-  //   });
 
   const recentPosts = data?.stats?.recentPosts?.rows;
 
@@ -76,16 +62,6 @@ export default function Dashboard() {
       }
     });
   }, [recentPosts, filter])();
-
-  // Handlers
-  // const handleEdit = (postId: number) => {
-  //   router.push(`/posts/${postId}/edit`);
-  // };
-
-  // const handleDelete = async () => {
-  //   if (deleteId === null) return;
-  //   await deletePost(`/${deleteId}`);
-  // };
 
   const handleViewAll = () => {
     router.push("/posts");
@@ -163,34 +139,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Delete Confirmation Modal */}
-        {/* {deleteId !== null && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-box p-6 rounded-2xl max-w-md">
-              <h3 className="text-lg font-bold mb-4">Confirm Delete</h3>
-              <p className="mb-6">
-                Are you sure you want to delete this post? This action cannot be
-                undone.
-              </p>
-              <div className="flex gap-4 justify-end">
-                <button
-                  onClick={() => setDeleteId(null)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-xl hover:bg-gray-600 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50"
-                >
-                  {deleting ? "Deleting..." : "Delete"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )} */}
-
         <div className="border rounded-2xl p-0.5">
           <table className="w-full bg-box rounded-2xl p-4">
             <thead>
@@ -226,20 +174,6 @@ export default function Dashboard() {
                     <td className="text-left p-2.5">{item.title}</td>
                     <td>{item.author_name}</td>
                     <td>{item.created_at ?? "—"}</td>
-                    {/* <td className="text-center space-x-2">
-                      <button
-                        onClick={() => handleEdit(item.post_id)}
-                        className="text-blue-500 hover:text-blue-700 transition-colors"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setDeleteId(item.post_id)}
-                        className="text-red-500 hover:text-red-700 transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </td> */}
                   </tr>
                 ))
               ) : (
