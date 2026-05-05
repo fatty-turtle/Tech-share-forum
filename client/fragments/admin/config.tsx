@@ -28,7 +28,7 @@ const actions = [
     name: "Logout",
     icon: <LogoutIcon />,
     route: "/login",
-    isAction: true,
+    isLogout: true,
   },
 ];
 
