@@ -3,7 +3,7 @@
 import EyeIcon from "@/components/icons/EyeIcon";
 import ThumbIcon from "@/components/icons/ThumbIcon";
 import TrendIcon from "@/components/icons/TrendIcon";
-import HashIcon from "@/components/icons/HashIcon";
+// import HashIcon from "@/components/icons/HashIcon";
 
 interface PostType {
   post_id: number;
@@ -70,10 +70,10 @@ export default function Post({ posts, tags, activeTag, onTagChange }: Props) {
                   <img
                     src={post.author_avatar}
                     alt={post.author_name}
-                    className="w-9 h-9 rounded-full object-cover"
+                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">
                     {post.author_name[0]}
                   </div>
                 )}

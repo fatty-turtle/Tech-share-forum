@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useGetApi, useDeleteApi } from "@/hooks/api";
+import { useGetApi } from "@/hooks/api";
 
 interface DashboardStats {
   stats: {
@@ -102,33 +102,45 @@ export default function Dashboard() {
         <p>Real-time pulse of the TechShare editorial ecosystem.</p>
       </article>
 
-      <article className="flex flex-row justify-evenly gap-4 text-center">
-        <div className="bg-box p-4 rounded-2xl flex-1 min-w-50">
-          <p>Total Members</p>
-          <h1>{loading ? "..." : (data?.stats?.totalUsers ?? "—")}</h1>
+      <article className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-center">
+        <div className="bg-box p-6 rounded-2xl border shadow-sm hover:shadow-md transition-all">
+          <p className="text-gray-600 mb-2 text-sm font-medium">
+            Total Members
+          </p>
+          <h1 className="text-3xl font-bold text-foreground">
+            {loading ? "..." : (data?.stats?.totalUsers ?? "—")}
+          </h1>
         </div>
-        <div className="bg-box p-4 rounded-2xl flex-1 min-w-50">
-          <p>Total Posts</p>
-          <h1>{loading ? "..." : (data?.stats?.totalPosts ?? "—")}</h1>
+        <div className="bg-box p-6 rounded-2xl border shadow-sm hover:shadow-md transition-all">
+          <p className="text-gray-600 mb-2 text-sm font-medium">Total Posts</p>
+          <h1 className="text-3xl font-bold text-foreground">
+            {loading ? "..." : (data?.stats?.totalPosts ?? "—")}
+          </h1>
         </div>
-        <div className="bg-box p-4 rounded-2xl flex-1 min-w-50">
-          <p>New Users Today</p>
-          <h1>{loading ? "..." : (data?.stats?.newUsersToday ?? "—")}</h1>
+        <div className="bg-box p-6 rounded-2xl border shadow-sm hover:shadow-md transition-all">
+          <p className="text-gray-600 mb-2 text-sm font-medium">
+            New Users Today
+          </p>
+          <h1 className="text-3xl font-bold text-foreground">
+            {loading ? "..." : (data?.stats?.newUsersToday ?? "—")}
+          </h1>
         </div>
-        <div className="bg-box p-4 rounded-2xl flex-1 min-w-50">
-          <p>Tag Made</p>
-          <h1>{loading ? "..." : (data?.stats?.totalTags ?? "—")}</h1>
+        <div className="bg-box p-6 rounded-2xl border shadow-sm hover:shadow-md transition-all">
+          <p className="text-gray-600 mb-2 text-sm font-medium">Tags Created</p>
+          <h1 className="text-3xl font-bold text-foreground">
+            {loading ? "..." : (data?.stats?.totalTags ?? "—")}
+          </h1>
         </div>
       </article>
 
       <article>
-        <div className="flex flex-row items-center justify-between gap-4 mb-4">
+        <div className="flex flex-col items-center justify-between gap-4 mb-4  sm:flex-row">
           <h1>Recent Activity</h1>
           <div className="flex flex-row gap-3">
             <select
               value={filter}
               onChange={handleFilterChange}
-              className="bg-box p-2 rounded-xl text-foreground border-none cursor-pointer"
+              className="bg-box p-2 rounded-xl text-foreground border cursor-pointer"
             >
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -179,13 +191,13 @@ export default function Dashboard() {
           </div>
         )} */}
 
-        <div>
+        <div className="border rounded-2xl p-0.5">
           <table className="w-full bg-box rounded-2xl p-4">
             <thead>
-              <tr className="bg-gray-200 h-18 p-2.5">
-                <th>Post Title</th>
-                <th>Author</th>
+              <tr className="bg-gray-200 h-auto py-3 md:py-4 p-2.5 rounded-l-xl">
+                <th className="rounded-tl-xl">Post Title</th>
                 <th>Date</th>
+                <th className="rounded-tr-xl">Author</th>
                 {/* <th>Action</th> */}
               </tr>
             </thead>

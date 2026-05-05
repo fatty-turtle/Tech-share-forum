@@ -1,19 +1,49 @@
 @import url("@/app/globals.css");
-main {
-  background-color: var(--color-background);
-  width: 100%;
+
+.admin-layout {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
-  font-size: 20px;
-  color: var(--color-foreground);
+  min-height: 100vh;
 }
 
-h1 {
-  font-size: 3rem;
-  font-weight: bold;
+.admin-sidebar {
+  width: 16rem;
+  background: var(--background-box);
+  border-right: 1px solid var(--gray-200);
+  transition: transform 0.3s ease-in-out;
 }
 
-button {
-  cursor: pointer;
+.admin-sidebar.mobile-open {
+  transform: translateX(0);
+}
+
+.admin-sidebar.mobile-closed {
+  transform: translateX(-100%);
+}
+
+.admin-content {
+  flex: 1;
+  overflow: auto;
+}
+
+@media (max-width: 1023px) {
+  .admin-sidebar {
+    position: fixed;
+    z-index: 50;
+    height: 100vh;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .admin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-sidebar {
+    position: static;
+    transform: none !important;
+  }
 }

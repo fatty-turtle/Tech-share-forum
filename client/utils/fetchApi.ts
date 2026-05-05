@@ -46,7 +46,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
+    if (error.response?.status === 401) {
       localStorage.removeItem("accessToken");
       // Optional: redirect to login
       window.location.href = "/login";

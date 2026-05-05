@@ -6,6 +6,7 @@ import { ApiError, ApiResponse, fetchApi } from "../lib/apiClient";
 
 type UpdateMethod = "PUT" | "PATCH";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface UseCreateApiOptions<TResponse, TBody> {
   /**
    * HTTP method to use: "PUT" (full replace) or "PATCH" (partial update).

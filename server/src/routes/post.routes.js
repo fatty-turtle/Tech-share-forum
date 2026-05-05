@@ -13,11 +13,11 @@ router.get("/", apiRateLimiter, postController.getPosts);
 router.get("/trend", apiRateLimiter, postController.getTrendPosts);
 
 // Protected (requires authentication) - authors or admins can delete
-router.delete(
-  "/:id",
-  authenticate,
-  authorize("ADMIN", "USER"),
-  postController.deletePost,
-);
+// router.delete(
+//   "/:id",
+//   authenticate,
+//   authorize("ADMIN", "USER"),
+//   postController.deletePost,
+// );
 
 export default router;

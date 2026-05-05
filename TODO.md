@@ -1,16 +1,13 @@
-# TSF Lighthouse/SEO/Responsive Optimization TODO
+# TSF Project Fixes - Server & Client Startup
 
-## Plan Breakdown & Progress Tracker
+## Steps:
 
-### 1. Update root layout.tsx with SEO metadata, optimized font, viewport ✅ [PENDING]
-### 2. Configure next.config.ts for image optimization, headers ✅ [PENDING]
-### 3. Update globals.css with minor responsive/perf tweaks ✅ [PENDING]
-### 4. Optimize images in MainStats.tsx with next/Image ✅ [PENDING]
-### 5. Update home page with canonical, ensure SSR ✅ [PENDING]
-### 6. Add robots.txt and sitemap.xml basics ✅ [PENDING]
-### 7. Run build/lint and Lighthouse test ✅ [PENDING]
-### 8. Responsive audit & fixes if any ✅ [PENDING - based on current Tailwind usage]
+- [ ] 1. Uncomment PostController methods (deletePost, createPost, updatePost, etc.) in server/src/controllers/post.controller.js
+- [ ] 2. Update client/postcss.config.mjs for TailwindCSS v4 compatibility
+- [ ] 3. Disable experimental CSS optimization in client/next.config.ts to fix 'critters' error
+- [ ] 4. Install client dependencies: cd client && npm install
+- [ ] 5. Test server: cd server && node src/server.js
+- [ ] 6. Test client: cd client && npm run dev
+- [ ] 7. [Optional] Test DELETE /post/:id endpoint
 
-**Next Step:** Implement #1 (layout.tsx)
-
-*Updated after each completed step.*
+Current progress: Starting step 1

@@ -2,7 +2,6 @@
 import SearchIcon from "@/components/icons/SearchIcon";
 import { useState } from "react";
 import LogoIcon from "@/components/icons/LogoIcon";
-import { useRouter } from "next/navigation";
 import MenuIcon from "@/components/icons/MenuIcon";
 import CloseIcon from "@/components/icons/CloseIcon";
 import useNavigate from "@/hooks/useNavigate";
@@ -10,7 +9,7 @@ import SearchBar from "@/components/general/SearchBar";
 import { useAuth } from "@/hooks/lib/useAuth";
 
 export default function ClientHeader() {
-  const router = useRouter();
+  // const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ export default function ClientHeader() {
   return (
     <header className="relative bg-background-box border-b border-gray-200 font-inter">
       {/* ─── Main bar ─── */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-3 gap-4">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 gap-4">
         {/* Brand */}
         <div
           className="flex items-center gap-2 cursor-pointer shrink-0"
@@ -35,7 +34,7 @@ export default function ClientHeader() {
 
         {/* Nav — desktop only (lg+) */}
         <nav className="hidden lg:block">
-          <ul className="flex gap-8 font-medium">
+          <ul className="flex gap-6 lg:gap-8 font-medium">
             {["Discussions", "Tutorials", "Events"].map((item) => (
               <li key={item}>
                 <a

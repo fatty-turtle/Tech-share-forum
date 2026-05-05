@@ -71,7 +71,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+      <div className="w-full max-w-sm sm:max-w-md mx-auto px-4 sm:px-0 rounded-xl bg-white p-6 sm:p-8 shadow-lg">
         <h2 className="mb-6 text-center text-2xl font-bold text-foreground">
           Login
         </h2>
@@ -82,7 +82,7 @@ export default function Login() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-600">
               Email

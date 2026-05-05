@@ -2,8 +2,8 @@ import SearchBar from "@/components/general/SearchBar";
 import BellIcon from "@/components/icons/BellIcon";
 export default function AdminHead() {
   return (
-    <header className="flex p-4 border-b border-gray-200">
-      <div className="flex flex-9 justify-between items-center p-4 border-r border-gray-200">
+    <header className="flex flex-col lg:flex-row p-4 sm:p-6 lg:p-8 border-b border-gray-200">
+      <div className="flex flex-1 lg:flex-9 justify-center lg:justify-between items-center p-4 sm:p-6 border-b lg:border-r border-gray-200 mb-4 lg:mb-0 lg:mr-4">
         <SearchBar placeholder="Search for users, posts, or reports..." />
         <BellIcon
           size={20}

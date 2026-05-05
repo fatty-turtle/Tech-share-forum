@@ -55,7 +55,7 @@ export default function VerifyEmail() {
 
   return (
     <section className="flex items-center justify-center min-h-screen">
-      <div className="p-8 rounded-lg shadow-lg max-w-md w-full mx-4">
+      <div className="p-6 sm:p-8 rounded-lg shadow-lg max-w-sm sm:max-w-md w-full mx-auto">
         <p className="text-foreground text-2xl text-center mb-4">{message}</p>
         <p className="text-foreground/70 text-center text-sm">
           Redirecting to login in 3 seconds...

@@ -3,6 +3,7 @@
 import HashIcon from "@/components/icons/HashIcon";
 import StarIcon from "@/components/icons/StarIcon";
 import AddFriendIcon from "@/components/icons/AddFriendIcon";
+import Image from "next/image";
 
 interface TrendTag {
   tag_id: number;
@@ -40,7 +41,7 @@ export default function MainStats({
   communityStats,
 }: Props) {
   return (
-    <aside className="w-64 shrink-0 flex flex-col gap-5">
+    <aside className="hidden lg:block lg:w-80 flex flex-col gap-3 sm:gap-5">
       {/* Popular Tags Card */}
       <div className="bg-backgroud-box border border-gray-200 rounded-xl p-5">
         <h3 className="text-base font-bold text-foreground flex items-center gap-2 mb-4">
@@ -91,10 +92,13 @@ export default function MainStats({
               >
                 <div className="flex items-center gap-2.5">
                   {contributor.avatar ? (
-                    <img
+                    <Image
                       src={contributor.avatar}
                       alt={contributor.name}
-                      className="w-8 h-8 rounded-full object-cover"
+                      width={32}
+                      height={32}
+                      className="rounded-full object-cover"
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">

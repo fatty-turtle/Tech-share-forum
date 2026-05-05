@@ -1,5 +1,5 @@
 // app/layout.tsx
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import AuthHeader from "@/fragments/AuthHeader";
 
