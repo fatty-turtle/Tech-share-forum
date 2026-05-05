@@ -1,7 +1,7 @@
 import DashBoardIcon from "@/components/icons/DashBoardIcon";
-import UsersIcon from "@/components/icons/UsersIcon";
+// import UsersIcon from "@/components/icons/UsersIcon";
 // import HammerIcon from "@/components/icons/HammerIcon";
-import CogIcon from "@/components/icons/CogIcon";
+// import CogIcon from "@/components/icons/CogIcon";
 import LogoutIcon from "@/components/icons/LogoutIcon";
 const actions = [
   {
@@ -9,21 +9,21 @@ const actions = [
     icon: <DashBoardIcon />,
     route: "/dashboard",
   },
-  {
-    name: "User Management",
-    icon: <UsersIcon />,
-    route: "/user-management",
-  },
+  // {
+  //   name: "User Management",
+  //   icon: <UsersIcon />,
+  //   route: "/user-management",
+  // },
   // {
   //   name: "Content Moderation",
   //   icon: <HammerIcon />,
   //   route: "/content-mod",
   // },
-  {
-    name: "Settings",
-    icon: <CogIcon />,
-    route: "/settings",
-  },
+  // {
+  //   name: "Settings",
+  //   icon: <CogIcon />,
+  //   route: "/settings",
+  // },
   {
     name: "Logout",
     icon: <LogoutIcon />,
