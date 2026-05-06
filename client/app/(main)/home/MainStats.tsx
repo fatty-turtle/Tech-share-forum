@@ -79,11 +79,11 @@ export default function MainStats({
       {/* Top Contributors Card */}
       {topContributors.length > 0 && (
         <div className="bg-white border border-gray-200 rounded-xl p-5">
-          <h3 className="text-base font-bold text-foreground flex items-center gap-2 mb-4">
+          <h2 className="text-base font-bold text-foreground flex items-center gap-2 mb-4">
             {/* circle-plus icon */}
             <StarIcon />
             Top Contributors
-          </h3>
+          </h2>
           <div className="space-y-3">
             {topContributors.map((contributor) => (
               <div

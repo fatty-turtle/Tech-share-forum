@@ -108,7 +108,7 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // ── Case 1: A refresh is already in progress — queue this request ──
+    // ── Case: A refresh is already in progress — queue this request ──
     if (isRefreshing) {
       return new Promise<string>((resolve, reject) => {
         failedQueue.push({ resolve, reject });
@@ -123,12 +123,11 @@ apiClient.interceptors.response.use(
         .catch((err) => Promise.reject(err));
     }
 
-    // ── Case 2: Start the refresh flow ────────────────────────────────
+    // ── Case: Start the refresh flow ────────────────────────────────
     originalRequest._retry = true;
     isRefreshing = true;
 
     try {
-      // withCredentials sends the httpOnly cookie automatically — no body needed
       const { data } = await apiClient.post<{ accessToken: string }>(
         "/auth/refresh",
       );
@@ -146,7 +145,6 @@ apiClient.interceptors.response.use(
       };
       return apiClient(originalRequest);
     } catch (refreshError) {
-      // Refresh token is also expired/invalid — clear local state and redirect
       processQueue(refreshError, null);
       clearAuthAndRedirect();
       return Promise.reject(refreshError);
