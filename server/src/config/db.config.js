@@ -47,11 +47,15 @@ async function initDB() {
     if (pool) return pool;
 
     // create database
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-    });
+    if (!process.env.MYSQL_PUBLIC_URL) {
+      const connection = await mysql.createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+      });
+    } else {
+      const connection = await mysql.createConnection(MYSQL_PUBLIC_URL);
+    }
 
     await connection.query(
       `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_DATABASE}\``,

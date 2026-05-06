@@ -32,7 +32,7 @@ transporter.verify((error, success) => {
  * @returns {Promise<void>}
  */
 async function sendVerificationEmail(email, token) {
-  const link = `${process.env.APP_URL}:${process.env.CLIENT_PORT}/verify-email/${token}`;
+  const link = `${process.env.APP_CLIENT_URL}:${process.env.CLIENT_PORT}/verify-email/${token}`;
 
   await transporter.sendMail({
     from: `"Your App" <${process.env.SMTP_USER}>`,

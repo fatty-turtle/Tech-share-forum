@@ -17,7 +17,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: `http://localhost:${process.env.CLIENT_PORT}`,
+    origin: `${APP_CLIENT_URL}:${process.env.CLIENT_PORT}`,
     credentials: true,
   }),
 );
