@@ -1,16 +1,17 @@
-import fetchApi from "@/utils/fetchApi";
+"use client";
 import Carousel from "./Carousel";
 import MainStats from "./MainStats";
 import Post from "./Post";
+import { useGetApi } from "@/hooks/api";
 
-export default async function Homepage() {
-  const postApiRes = await fetchApi("http://localhost:4000/post/trend");
-  const tagApiRes = await fetchApi("http://localhost:4000/tag");
-  const trendTagApiRes = await fetchApi("http://localhost:4000/tag/trend");
+export default function Homepage() {
+  const postApiRes = useGetApi("/post/trend");
+  const tagApiRes = useGetApi("/tag");
+  const trendTagApiRes = useGetApi("/tag/trend");
 
-  const posts = postApiRes.response?.posts || [];
-  const tags = tagApiRes.response?.tags || [];
-  const trendTags = trendTagApiRes.response?.tags || [];
+  const posts = postApiRes.data?.posts || [];
+  const tags = tagApiRes.data?.tags || [];
+  const trendTags = trendTagApiRes.data?.tags || [];
 
   const topContributors = [
     {

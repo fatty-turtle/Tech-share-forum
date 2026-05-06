@@ -41,8 +41,6 @@ export default function Carousel() {
       slidesPerView={1}
       navigation
       pagination={{ clickable: true }}
-      onSwiper={(swiper) => console.log(swiper)}
-      onSlideChange={() => console.log("slide change")}
       className="w-full max-w-6xl mx-auto mt-5 mb-5 rounded-2xl px-4 sm:px-6"
     >
       {samples.map((sample, i) => (
