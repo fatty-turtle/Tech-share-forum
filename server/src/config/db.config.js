@@ -54,7 +54,9 @@ async function initDB() {
         password: process.env.DB_PASSWORD,
       });
     } else {
-      const connection = await mysql.createConnection(MYSQL_PUBLIC_URL);
+      const connection = await mysql.createConnection(
+        process.env.MYSQL_PUBLIC_URL,
+      );
     }
 
     await connection.query(
