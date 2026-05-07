@@ -69,7 +69,7 @@ export default function Register() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-600">
               Full Name

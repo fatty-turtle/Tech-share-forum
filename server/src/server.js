@@ -19,7 +19,7 @@ async function startServer() {
     const app = (await import("./app.js")).default;
 
     app.listen(PORT, () => {
-      console.log(`Server running at ${APP_SERVER_URL}:${PORT}`);
+      console.log(`Server running at ${APP_URL}:${PORT}`);
     });
   } catch (err) {
     console.error("Server startup failed:", err);

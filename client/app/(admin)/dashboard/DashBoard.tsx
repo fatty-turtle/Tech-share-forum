@@ -28,9 +28,8 @@ export default function Dashboard() {
   const [filter, setFilter] = useState<FilterType>("all");
 
   // Fetch dashboard stats
-  const { data, loading, error, status, refetch } = useGetApi<DashboardStats>(
-    "http://localhost:4000/dashboard",
-  );
+  const { data, loading, error, status, refetch } =
+    useGetApi<DashboardStats>("/dashboard");
 
   const recentPosts = data?.stats?.recentPosts?.rows;
 

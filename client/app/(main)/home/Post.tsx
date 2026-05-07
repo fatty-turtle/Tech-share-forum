@@ -4,6 +4,7 @@ import EyeIcon from "@/components/icons/EyeIcon";
 import ThumbIcon from "@/components/icons/ThumbIcon";
 import TrendIcon from "@/components/icons/TrendIcon";
 // import HashIcon from "@/components/icons/HashIcon";
+import Image from "next/image";
 
 interface PostType {
   post_id: number;
@@ -67,9 +68,12 @@ export default function Post({ posts, tags, activeTag, onTagChange }: Props) {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2.5">
                 {post.author_avatar ? (
-                  <img
+                  <Image
                     src={post.author_avatar}
                     alt={post.author_name}
+                    width={30}
+                    height={30}
+                    loading="lazy"
                     className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover"
                   />
                 ) : (
@@ -95,7 +99,10 @@ export default function Post({ posts, tags, activeTag, onTagChange }: Props) {
                 </div>
               </div>
               {/* More options */}
-              <button className="text-gray-400 hover:text-gray-600 transition-colors">
+              <button
+                aria-label="More details"
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
                 <svg
                   className="w-4 h-4"
                   fill="currentColor"
