@@ -4,6 +4,7 @@ import { initDB, getPool, setDB } from "./config/db.config.js";
 dotenv.config();
 
 const PORT = process.env.SERVER_PORT;
+const APP_URL = process.env.APP_URL;
 
 /**
  * Starts the Express server and initializes the database
@@ -18,7 +19,7 @@ async function startServer() {
     const app = (await import("./app.js")).default;
 
     app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
+      console.log(`Server running at ${APP_URL}:${PORT}`);
     });
   } catch (err) {
     console.error("Server startup failed:", err);
