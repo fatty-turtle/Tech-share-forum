@@ -1,0 +1,26 @@
+import IconProps from "../icon.base";
+export default function DashBoardIcon({
+  size = 20,
+  className = "",
+  onClick,
+}: IconProps){
+    return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      stroke="none"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      onClick={onClick}
+    >
+    <path
+      d="M10 6V0H18V6H10V6M0 10V0H8V10H0V10M10 18V8H18V18H10V18M0 18V12H8V18H0V18M2 8H6V2H2V8V8M12 16H16V10H12V16V16M12 4H16V2H12V4V4M2 16H6V14H2V16V16M6 8V8V8V8V8V8M12 4V4V4V4V4V4M12 10V10V10V10V10V10M6 14V14V14V14V14V14"
+    />
+    </svg>
+  );
+}

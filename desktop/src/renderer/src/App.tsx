@@ -1,13 +1,16 @@
-import { useState } from "react";
 import "./styles.css";
+import { HashRouter, Routes, Route } from "react-router-dom";
+import Main from "./pages/client/Main";
+import ClientLayout from "./layouts/ClientLayout";
 
 export default function App() {
-  const [msg, setMsg] = useState<string>("Loading...");
-
   return (
-    <div style={{ fontFamily: "system-ui", padding: 24 }}>
-      <h1 style={{ marginTop: 0 }}>TSF Desktop</h1>
-      <p>{msg}</p>
-    </div>
+    <HashRouter>
+      <Routes>
+        <Route element={<ClientLayout />}>
+          <Route path="/" element={<Main />} />
+        </Route>
+      </Routes>
+    </HashRouter>
   );
 }

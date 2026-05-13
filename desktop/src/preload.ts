@@ -1,4 +1,4 @@
-import { contextBridge } from "./shared/contextBridge";
+import { contextBridge } from "./shared/contextBridge.js";
 
 contextBridge();
 
