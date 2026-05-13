@@ -13,11 +13,10 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 
 dotenv.config();
 const app = express();
-
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: `${APP_URL}:${process.env.CLIENT_PORT}`,
+    origin: `${process.env.APP_URL}:${process.env.CLIENT_PORT}`,
     credentials: true,
   }),
 );
