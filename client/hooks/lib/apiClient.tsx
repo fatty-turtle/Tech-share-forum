@@ -31,6 +31,13 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
+// Ensure cookies (refreshToken) are included for refresh even if some requests
+// override with headers.
+apiClient.interceptors.request.use((config) => {
+  config.withCredentials = true;
+  return config;
+});
+
 // ─── Refresh Token State ──────────────────────────────────────────────────────
 
 let isRefreshing = false;

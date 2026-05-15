@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TSF Desktop</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: 100vh;
+        align-items: center;
+        justify-content: center;
+        background: #0b1220;
+        color: #e5e7eb;
+      }
+      .card {
+        width: min(560px, 92vw);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0 0 8px 0;
+      }
+      p {
+        margin: 0;
+        opacity: 0.9;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>TSF Desktop</h1>
+      <p>
+        Loading the web app… If this takes too long, start the Next.js client in
+        <code>/client</code>.
+      </p>
+    </div>
+
+    <script>
+      // Optional: allow main process to push webUrl (not required).
+      const handler = (e) => {
+        // no-op
+      };
+      window.addEventListener("tsf:weburl", handler);
+    </script>
+  </body>
+</html>
