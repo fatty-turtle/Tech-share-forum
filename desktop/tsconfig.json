@@ -2,16 +2,12 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "outDir": "dist-electron",
-    "rootDir": "src",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": ["node"],
-    "moduleDetection": "force"
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["./main.js", "./preload.js", "./index.html"],
+  "exclude": ["dist-electron"]
 }

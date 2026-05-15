@@ -2,60 +2,13 @@
   "name": "tsf-desktop",
   "version": "0.1.0",
   "private": true,
-  "main": "dist-electron/main.js",
-  "type": "commonjs",
+  "main": "main.js",
   "scripts": {
-    "dev": "concurrently -k \"npm:dev:electron\" \"npm:dev:renderer\"",
-    "dev:electron": "wait-on http://localhost:5173 && electron .",
-    "dev:renderer": "vite --port 5173",
-    "build": "npm run build:renderer && npm run build:electron",
-    "build:renderer": "vite build",
-    "build:electron": "tsc -p tsconfig.json",
-    "package": "npm run build && electron-builder"
+    "dev": "electron .",
+    "start": "electron .",
+    "pack": "echo \"No pack step configured (use electron-builder if needed)\""
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "concurrently": "^9.0.0",
-    "electron": "^31.0.0",
-    "electron-builder": "^25.0.0",
-    "typescript": "^5.0.0",
-    "wait-on": "^8.0.0",
-    "vite": "^5.0.0",
-    "@vitejs/plugin-react": "^4.0.0"
-  },
-  "build": {
-    "appId": "com.tsf.desktop",
-    "productName": "TSF Desktop",
-    "asar": true,
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "dist-electron/**/*",
-      "dist/renderer/**/*",
-      "package.json"
-    ],
-    "extraResources": [],
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "mac": {
-      "target": [
-        "dmg"
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage"
-      ]
-    }
+    "electron": "30.0.0"
   }
 }
