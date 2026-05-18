@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "node:path";
 
 const isDev = !app.isPackaged;
@@ -7,6 +7,9 @@ const CLIENT_WEB_URL = process.env.CLIENT_WEB_URL ?? "http://localhost:3000";
 const SERVER_CONNECT_TIMEOUT_MS = Number(
   process.env.SERVER_CONNECT_TIMEOUT_MS ?? 20_000,
 );
+
+// Disable default menu
+Menu.setApplicationMenu(null);
 
 function waitForUrl(url: string, timeoutMs: number) {
   const startedAt = Date.now();
@@ -53,14 +56,16 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    minHeight: 800,
     minWidth: 960,
+    minHeight: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
+
+  mainWindow.setMinimumSize(960, 600);
 
   if (isDev) {
     mainWindow.loadURL(VITE_DEV_URL);

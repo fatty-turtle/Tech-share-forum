@@ -22,10 +22,7 @@ export default function App() {
   >({ kind: "connecting" });
 
   useEffect(() => {
-    // Receive config and connection error messages from Electron main process.
-    const onConfig = (_e: Event) => {
-      // no-op for now; API base url handled inside web app
-    };
+    const onConfig = (_e: Event) => {};
 
     const onClientError = (e: Event) => {
       const detail = (e as CustomEvent).detail as
@@ -55,8 +52,6 @@ export default function App() {
   }, []);
 
   const onRetry = () => {
-    // Ask Electron main process to retry by reloading this loader UI.
-    // When it loads again, main process will attempt connection again.
     window.location.reload();
   };
 
@@ -69,7 +64,7 @@ export default function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <Spinner />
           <div>
-            <div style={{ fontWeight: 600 }}>Connecting to client web…</div>
+            <div style={{ fontWeight: 600 }}>Connecting to client…</div>
             <div style={{ color: "rgba(0,0,0,0.6)", fontSize: 13 }}>
               Please wait.
             </div>
@@ -88,7 +83,7 @@ export default function App() {
                 background: "#d92d20",
               }}
             />
-            <div style={{ fontWeight: 700 }}>Cannot connect to client web</div>
+            <div style={{ fontWeight: 700 }}>Cannot connect to client</div>
           </div>
 
           <p

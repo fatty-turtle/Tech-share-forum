@@ -9,6 +9,8 @@ const isDev = !electron_1.app.isPackaged;
 const VITE_DEV_URL = process.env.VITE_DEV_URL ?? "http://localhost:5173";
 const CLIENT_WEB_URL = process.env.CLIENT_WEB_URL ?? "http://localhost:3000";
 const SERVER_CONNECT_TIMEOUT_MS = Number(process.env.SERVER_CONNECT_TIMEOUT_MS ?? 20_000);
+// Disable default menu
+electron_1.Menu.setApplicationMenu(null);
 function waitForUrl(url, timeoutMs) {
     const startedAt = Date.now();
     return new Promise((resolve) => {
@@ -48,27 +50,26 @@ function createWindow() {
     const mainWindow = new electron_1.BrowserWindow({
         width: 1200,
         height: 800,
+        minWidth: 960,
+        minHeight: 600,
         webPreferences: {
             preload: node_path_1.default.join(__dirname, "preload.js"),
             contextIsolation: true,
             nodeIntegration: false,
         },
     });
-    // Always start with the local React loader (spinner / error / retry)
+    mainWindow.setMinimumSize(960, 600);
     if (isDev) {
         mainWindow.loadURL(VITE_DEV_URL);
     }
     else {
-        // In production we load the Vite-built renderer from dist/renderer
         const indexHtml = node_path_1.default.join(__dirname, "..", "renderer", "index.html");
         mainWindow.loadFile(indexHtml);
     }
-    // Provide API base URL to loader/renderer
     mainWindow.webContents.once("did-finish-load", () => {
         mainWindow.webContents.send("config", {
             apiBaseUrl: process.env.VITE_API_BASE_URL ?? "http://localhost:4000",
         });
-        // Start connection attempt after loader has rendered
         connectAndNavigate(mainWindow).then((result) => {
             if (!result.connected) {
                 mainWindow.webContents.send("client-connection-error", {
@@ -79,15 +80,11 @@ function createWindow() {
         });
     });
     mainWindow.webContents.on("did-fail-load", () => {
-        // If navigation fails after we tried to load the client, show loader error.
-        // (Retry will trigger a fresh navigation.)
         mainWindow.webContents.send("client-connection-error", {
             message: `Failed to load client web at ${CLIENT_WEB_URL}`,
             timeoutMs: SERVER_CONNECT_TIMEOUT_MS,
         });
     });
-    // Retry handler: listen from loader UI via a DOM event
-    // We keep it minimal because preload has no IPC.
     mainWindow.webContents.on("ipc-message", () => {
         // noop (no ipc used)
     });
