@@ -75,6 +75,7 @@ export default function Post({ posts, tags, activeTag, onTagChange }: Props) {
                     height={30}
                     loading="lazy"
                     className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover"
+                    unoptimized
                   />
                 ) : (
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">

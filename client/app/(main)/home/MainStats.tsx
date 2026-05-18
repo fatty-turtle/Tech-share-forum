@@ -99,6 +99,7 @@ export default function MainStats({
                       height={32}
                       className="rounded-full object-cover"
                       loading="lazy"
+                      unoptimized
                     />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
